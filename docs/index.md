@@ -394,3 +394,11 @@ The `/settings` route implements strict modern SaaS design patterns (inspired by
 - **Split Layout (`SettingsRow`)**: Forms avoid stacking labels and inputs. Instead, they use a strict side-by-side grid (`sm:flex-row`), locking the label/description to a `240px` width column on the left and the interactive input on the right. 
 - **Edit Mode Protection**: Destructive or sensitive forms (like the Profile tab) default to a read-only state. Users must explicitly click an `Edit Profile` button in the Card Header to unlock the inputs. 
 - **Footer Persistence**: Forms maintain a `border-t bg-canvas/50` explicit footer at the bottom of the card to house the `Save changes` primary action and success banners, completely separated from the scrollable form body.
+
+### Dynamic Custom Categories
+To ensure the application maintains perfect visual harmony without introducing arbitrary colors, custom categories created by users bypass manual color-picking.
+When a user selects `+ Custom category...` and types a label (e.g. "Fitness"):
+1. The string is sanitized into an ID (`fitness`).
+2. The ID is run through a deterministic hashing algorithm.
+3. The hash inherently binds the category to one of the 4 strict semantic design tokens (`moss`, `ember`, `indigo`, `amber`).
+This guarantees that user-generated tags look exactly as professional as the hardcoded defaults, without requiring a complex UI color picker or running the risk of unreadable contrast. Custom categories are persisted in the `useGoalStore` and automatically propagate to board filters and Analytics charts.
