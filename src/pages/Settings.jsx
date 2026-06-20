@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { User, Bell, Palette, Shield, Check } from 'lucide-react'
+import { toast } from 'sonner'
 import { TopBar } from '../components/layout/TopBar'
 import { Card } from '../components/ui/Card'
 import { Input, Select } from '../components/ui/Input'
@@ -13,6 +14,7 @@ const SECTIONS = [
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'appearance', label: 'Appearance', icon: Palette },
   { id: 'privacy', label: 'Privacy', icon: Shield },
+  { id: 'advanced', label: 'Advanced', icon: Shield },
 ]
 
 export default function Settings() {
@@ -20,7 +22,10 @@ export default function Settings() {
   const [isEditing, setIsEditing] = useState(false)
   const [saved, setSaved] = useState(false)
   const user = useGoalStore((s) => s.user)
+  const preferences = useGoalStore((s) => s.preferences) || {}
   const updateUser = useGoalStore((s) => s.updateUser)
+  const updatePreferences = useGoalStore((s) => s.updatePreferences)
+  const resetData = useGoalStore((s) => s.resetData)
 
   function handleSave(e) {
     e.preventDefault()
@@ -32,7 +37,13 @@ export default function Settings() {
         email: formData.get('email'),
         timezone: formData.get('timezone')
       })
-      setIsEditing(false)
+      if (active === 'profile') {
+        toast.success('Profile saved successfully', {
+          description: 'Your details have been updated.',
+        })
+      } else {
+        toast.success('Settings saved')
+      }
     }
     
     setSaved(true)
@@ -79,6 +90,7 @@ export default function Settings() {
                     {active === 'notifications' && 'Control exactly what alerts interrupt your focus.'}
                     {active === 'appearance' && 'Customize how GoalFlow looks on your screen.'}
                     {active === 'privacy' && 'Manage your data visibility and sharing preferences.'}
+                    {active === 'advanced' && 'Danger zone. Reset or export your data.'}
                   </p>
                 </div>
                 {active === 'profile' && !isEditing && (
@@ -129,10 +141,31 @@ export default function Settings() {
               {active === 'notifications' && (
                 <form onSubmit={handleSave} className="flex flex-col h-full">
                   <div className="flex flex-col px-8 py-2">
-                    <Toggle label="Deadline reminders" description="Get notified 3 days before a goal is due" defaultChecked />
-                    <Toggle label="Weekly digest" description="A Monday-morning summary of last week's momentum" defaultChecked />
-                    <Toggle label="Streak alerts" description="Nudge me before my streak resets" defaultChecked />
-                    <Toggle label="Achievement celebrations" description="Confetti and a note when you hit a milestone" border={false} />
+                    <Toggle 
+                      label="Deadline reminders" 
+                      description="Get notified 3 days before a goal is due" 
+                      checked={preferences?.notifications?.deadline ?? true} 
+                      onChange={(v) => updatePreferences('notifications', { deadline: v })}
+                    />
+                    <Toggle 
+                      label="Weekly digest" 
+                      description="A Monday-morning summary of last week's momentum" 
+                      checked={preferences?.notifications?.weekly ?? true} 
+                      onChange={(v) => updatePreferences('notifications', { weekly: v })}
+                    />
+                    <Toggle 
+                      label="Streak alerts" 
+                      description="Nudge me before my streak resets" 
+                      checked={preferences?.notifications?.streak ?? true} 
+                      onChange={(v) => updatePreferences('notifications', { streak: v })}
+                    />
+                    <Toggle 
+                      label="Achievement celebrations" 
+                      description="Confetti and a note when you hit a milestone" 
+                      checked={preferences?.notifications?.celebrations ?? true} 
+                      onChange={(v) => updatePreferences('notifications', { celebrations: v })}
+                      border={false} 
+                    />
                   </div>
                 </form>
               )}
@@ -140,22 +173,30 @@ export default function Settings() {
               {active === 'appearance' && (
                 <form onSubmit={handleSave} className="flex flex-col h-full">
                   <div className="flex flex-col px-8 py-2">
+                    <SettingsRow label="Theme preference" description="Choose how GoalFlow looks to you." isEditing={true}>
+                      <Select id="theme" value={preferences?.appearance?.theme || 'light'} onChange={(e) => updatePreferences('appearance', { theme: e.target.value })}>
+                        <option value="system">System Default</option>
+                        <option value="light">Light Mode</option>
+                        <option value="dark">True OLED Dark Mode</option>
+                      </Select>
+                    </SettingsRow>
                     <SettingsRow label="Accent color" description="The primary color used for highlights and active states." isEditing={true}>
                       <div className="flex gap-3">
                         {['#1B6F5C', '#4C5FD5', '#FF6B4A', '#E8A23D'].map((color, i) => (
                           <button
                             key={color}
                             type="button"
+                            onClick={() => updatePreferences('appearance', { accent: color })}
                             className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 transition-transform hover:scale-105 shadow-sm"
-                            style={{ backgroundColor: color, borderColor: i === 0 ? '#14161A' : undefined }}
+                            style={{ backgroundColor: color, borderColor: preferences?.appearance?.accent === color ? '#14161A' : undefined }}
                           >
-                            {i === 0 && <Check size={16} className="text-white drop-shadow-sm" />}
+                            {preferences?.appearance?.accent === color && <Check size={16} className="text-white drop-shadow-sm" />}
                           </button>
                         ))}
                       </div>
                     </SettingsRow>
                     <SettingsRow label="Board density" description="How tightly packed the kanban cards should appear." isEditing={true} border={false}>
-                      <Select id="density" defaultValue="comfortable">
+                      <Select id="density" value={preferences?.appearance?.density || 'comfortable'} onChange={(e) => updatePreferences('appearance', { density: e.target.value })}>
                         <option value="comfortable">Comfortable</option>
                         <option value="compact">Compact</option>
                       </Select>
@@ -167,10 +208,46 @@ export default function Settings() {
               {active === 'privacy' && (
                 <form onSubmit={handleSave} className="flex flex-col h-full">
                   <div className="flex flex-col px-8 py-2">
-                    <Toggle label="Public achievement profile" description="Let others see your achieved goals" />
-                    <Toggle label="Share analytics with coach" description="Allow a connected accountability partner to view trends" border={false} />
+                    <Toggle 
+                      label="Public achievement profile" 
+                      description="Let others see your achieved goals" 
+                      checked={preferences?.privacy?.publicProfile || false}
+                      onChange={(v) => updatePreferences('privacy', { publicProfile: v })}
+                    />
+                    <Toggle 
+                      label="Share analytics with coach" 
+                      description="Allow a connected accountability partner to view trends" 
+                      checked={preferences?.privacy?.shareAnalytics || false}
+                      onChange={(v) => updatePreferences('privacy', { shareAnalytics: v })}
+                      border={false} 
+                    />
                   </div>
                 </form>
+              )}
+
+              {active === 'advanced' && (
+                <div className="flex flex-col h-full">
+                  <div className="flex flex-col px-8 py-6">
+                    <div className="border border-red-200 bg-red-50/50 rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <p className="text-[14px] font-semibold text-red-900">Developer Zone: Factory Reset</p>
+                        <p className="mt-1 text-[13px] text-red-700/80 max-w-md">Wipe your local storage and reset all goals, streaks, and settings back to the initial dummy data. This cannot be undone.</p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          if (window.confirm('Are you 100% sure you want to factory reset your data? All progress will be lost.')) {
+                            resetData()
+                            toast.error('Data reset to factory defaults')
+                          }
+                        }}
+                        className="shrink-0 border-red-200 text-red-700 hover:bg-red-50"
+                      >
+                        Reset All Data
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               )}
             </Card>
           </motion.div>
@@ -198,8 +275,7 @@ function SettingsRow({ label, description, value, isEditing = true, children, bo
   )
 }
 
-function Toggle({ label, description, defaultChecked = false, border = true }) {
-  const [on, setOn] = useState(defaultChecked)
+function Toggle({ label, description, checked, onChange, border = true }) {
   return (
     <div className={cn("flex items-center justify-between py-6", border && "border-b border-border")}>
       <div className="pr-8 max-w-[400px]">
@@ -208,17 +284,17 @@ function Toggle({ label, description, defaultChecked = false, border = true }) {
       </div>
       <button
         type="button"
-        onClick={() => setOn((v) => !v)}
-        aria-pressed={on}
+        onClick={() => onChange(!checked)}
+        aria-pressed={checked}
         className={cn(
           'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-moss-500 focus-visible:ring-offset-2',
-          on ? 'bg-moss-600' : 'bg-ink-200'
+          checked ? 'bg-moss-600' : 'bg-ink-200'
         )}
       >
         <span
           className={cn(
             'pointer-events-none inline-block h-[20px] w-[20px] transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-            on ? 'translate-x-5' : 'translate-x-0'
+            checked ? 'translate-x-5' : 'translate-x-0'
           )}
         />
       </button>

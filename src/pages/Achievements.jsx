@@ -5,23 +5,33 @@ import { TopBar } from '../components/layout/TopBar'
 import { Card } from '../components/ui/Card'
 import { CategoryTag } from '../components/goals/PriorityDot'
 import { useGoalStore } from '../store/useGoalStore'
-import { currentStreak, longestStreak } from '../lib/mockData'
+import { calculateStreaks } from '../lib/calculations'
 import { cn } from '../lib/utils'
 
-const BADGES = [
-  { id: 'b1', icon: Flame, label: '10-Day Streak', tone: 'ember', earned: true },
-  { id: 'b2', icon: Star, label: 'First Goal Achieved', tone: 'amber', earned: true },
-  { id: 'b3', icon: Target, label: '5 Goals Active', tone: 'indigo', earned: true },
-  { id: 'b4', icon: Crown, label: '3 Goals Achieved', tone: 'moss', earned: true },
-  { id: 'b5', icon: Sparkles, label: '25 Milestones Hit', tone: 'indigo', earned: true },
-  { id: 'b6', icon: Trophy, label: '30-Day Streak', tone: 'ember', earned: false },
-]
+
 
 export default function Achievements() {
   const goals = useGoalStore((s) => s.goals)
-  const achieved = Object.values(goals)
+  const milestonesById = useGoalStore((s) => s.milestones)
+  
+  const { currentStreak, longestStreak } = calculateStreaks(milestonesById)
+  const goalList = Object.values(goals)
+  const achieved = goalList
     .filter((g) => g.status === 'achieved')
     .sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
+    
+  const activeGoals = goalList.filter(g => g.status !== 'achieved').length
+  const achievedGoals = achieved.length
+  const milestonesHit = Object.values(milestonesById).filter(m => m.done).length
+
+  const BADGES = [
+    { id: 'b1', icon: Flame, label: '10-Day Streak', tone: 'ember', earned: longestStreak >= 10 },
+    { id: 'b2', icon: Star, label: 'First Goal Achieved', tone: 'amber', earned: achievedGoals >= 1 },
+    { id: 'b3', icon: Target, label: '5 Goals Active', tone: 'indigo', earned: activeGoals >= 5 },
+    { id: 'b4', icon: Crown, label: '3 Goals Achieved', tone: 'moss', earned: achievedGoals >= 3 },
+    { id: 'b5', icon: Sparkles, label: '25 Milestones Hit', tone: 'indigo', earned: milestonesHit >= 25 },
+    { id: 'b6', icon: Trophy, label: '30-Day Streak', tone: 'ember', earned: longestStreak >= 30 },
+  ]
 
   return (
     <div>

@@ -11,7 +11,7 @@ import { TopBar } from '../components/layout/TopBar'
 import { KanbanColumn } from '../components/goals/KanbanColumn'
 import { CommandBar } from '../components/goals/CommandBar'
 import { GoalDragOverlay } from '../components/goals/GoalDragOverlay'
-import { NewGoalDialog } from '../components/goals/NewGoalDialog'
+
 import { useGoalStore } from '../store/useGoalStore'
 import { STATUSES } from '../lib/mockData'
 import { goalProgress, sortGoalIds } from '../lib/calculations'
@@ -24,8 +24,9 @@ export default function GoalsBoard() {
   const moveGoal = useGoalStore((s) => s.moveGoal)
   const reorderWithinColumn = useGoalStore((s) => s.reorderWithinColumn)
 
+  const setNewGoalModalOpen = useGoalStore((s) => s.setNewGoalModalOpen)
+
   const [activeId, setActiveId] = useState(null)
-  const [newGoalOpen, setNewGoalOpen] = useState(false)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -95,7 +96,7 @@ export default function GoalsBoard() {
       <TopBar title="Goals Board" subtitle="Drag goals across stages as they mature." />
 
       <div className="px-8 py-6">
-        <CommandBar onNewGoal={() => setNewGoalOpen(true)} />
+        <CommandBar onNewGoal={() => setNewGoalModalOpen(true)} />
 
         <DndContext
           sensors={sensors}
@@ -120,7 +121,6 @@ export default function GoalsBoard() {
         </DndContext>
       </div>
 
-      <NewGoalDialog open={newGoalOpen} onClose={() => setNewGoalOpen(false)} />
     </div>
   )
 }

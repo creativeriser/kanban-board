@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Plus, CalendarDays, ListChecks, Pencil, Clock3, Activity, Trash2, Settings2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
+import { RichTextEditor } from '../components/ui/RichTextEditor'
 import { GrowthRing } from '../components/ui/GrowthRing'
 import { PriorityDot, CategoryTag } from '../components/goals/PriorityDot'
 import { MilestoneRow } from '../components/goals/MilestoneRow'
@@ -37,6 +39,9 @@ export default function GoalDetails() {
   function handleDeleteGoal() {
     if (window.confirm('Are you sure you want to delete this goal and all its milestones? This cannot be undone.')) {
       deleteGoal(goal.id)
+      toast.error('Goal deleted', {
+        description: `"${goal.title}" has been removed.`,
+      })
       navigate('/board', { replace: true })
     }
   }
@@ -207,13 +212,13 @@ export default function GoalDetails() {
               <Pencil size={14} className="text-ink-400" />
               <p className="font-display text-[15px] font-semibold text-ink-900">Notes</p>
             </div>
-            <textarea
-              value={notesDraft}
-              onChange={(e) => setNotesDraft(e.target.value)}
-              onBlur={() => updateGoalNotes(goal.id, notesDraft)}
+            <RichTextEditor
+              content={notesDraft}
+              onChange={(html) => {
+                setNotesDraft(html)
+                updateGoalNotes(goal.id, html)
+              }}
               placeholder="Jot down context, blockers, or reminders..."
-              rows={6}
-              className="w-full resize-none rounded border border-border bg-white px-3 py-2 text-[13px] text-ink-900 placeholder:text-ink-400 focus:border-moss-500 focus:outline-none"
             />
           </Card>
 

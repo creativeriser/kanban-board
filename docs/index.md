@@ -2,8 +2,8 @@
 
 **Product:** GoalFlow — Personal Goal Management Kanban Platform
 **Document type:** Combined Software Design Document (SDD) + Design System Reference
-**Version:** 1.0.0
-**Status:** Front-end complete (client-only, mock data) — no backend yet
+**Version:** 1.1.0
+**Status:** Front-end complete (client-only) — Phase 1 dynamic logic & local persistence implemented.
 **Last updated:** June 2026
 
 ---
@@ -61,7 +61,26 @@ Users define goals (e.g. "Run a sub-4-hour marathon"), break them into milestone
 
 ### 1.4 Scope & current status
 
-This is a **complete, working front-end** — every interaction (drag-and-drop, milestone toggling, goal creation, filtering, settings toggles) updates real application state and re-renders dependent UI (charts, rings, counts) live. There is **no backend**: all data lives in a single in-memory Zustand store, seeded from a mock dataset on load, and is lost on refresh. Section 17 enumerates exactly what's mocked and section 19 lays out how to make it real.
+This is a **complete, working front-end** — every interaction (drag-and-drop, milestone toggling, goal creation, filtering, settings toggles) updates real application state and re-renders dependent UI (charts, rings, counts) live. 
+
+As of **Phase 1**, there is **no backend**, but data is **persistent** using `localStorage` via Zustand's `persist` middleware.
+
+## Colors
+
+The application relies heavily on a dual-theme approach using CSS variables, defined in `index.css` and mapped into `tailwind.config.js`. This allows for a completely seamless, lag-free transition between Light Mode and True OLED Dark Mode.
+
+### Theme System (Light vs. Dark)
+We map abstract semantic names to concrete hex values using CSS variables. This ensures that when the user toggles dark mode, the entire UI switches instantly without requiring React to re-render thousands of components. We use smooth CSS transitions (`transition-colors duration-300`) to make the switch feel elegant and professional.
+
+**Semantic Color Mapping:**
+- `--color-canvas`: The absolute deepest background layer (e.g., `#F7F8FA` in light, `#000000` in dark for OLED perfection).
+- `--color-surface`: Card and dialog backgrounds (e.g., `#FFFFFF` in light, `#0E1014` in dark).
+- `--color-border`: Dividers and outlines (e.g., `#E6E8EC` in light, `#2A2F3A` in dark).
+- `--color-ink-*`: The primary grayscale spectrum for text, icons, and muted elements.
+
+By using this approach, we guarantee the application will never look "dirty" or inverted during a theme change. The theme defaults to `light` mode but can be instantly toggled on any page via the Sun/Moon icon in the TopBar, or via the `Appearance` section in Settings.
+
+### The Grayscale Spectrum (Ink)Developer Zone in Settings.
 
 ---
 
@@ -100,7 +119,7 @@ Instead: a cool warm-neutral light canvas (`#F7F8FA`), a dark ink sidebar (`#0E1
 |---|---|---|---|
 | Build tool | Vite | `^5.2.11` | Fast HMR, zero-config React JSX, minimal config surface vs. Webpack/CRA. |
 | UI library | React | `^18.3.1` | Required by brief; hooks-based, matches DnD Kit / Recharts ecosystem expectations. |
-| Routing | React Router | `^6.23.1` | Standard SPA routing; `useOutlet()` layout nesting used to preserve route context for `AnimatePresence` exit animations. |
+| Routing | React Router | `^6.23.1` | Standard SPA routing; explicitly passing `location` to `<Routes>` within `AnimatePresence` to prevent context freezing during exit animations. |
 | Drag & drop | DnD Kit (`@dnd-kit/core`, `/sortable`, `/utilities`) | `^6.1.0` / `^8.0.0` / `^3.2.2` | Accessible (keyboard + screen-reader support out of the box), unopinionated about rendering, and unlike `react-beautiful-dnd` is actively maintained. See §11 for the full architecture. |
 | Animation | Framer Motion | `^11.2.10` | Declarative, handles layout animations (`layout` prop) needed for milestone-list reflows and drag lift effects without manual FLIP math. |
 | Icons | Lucide React | `^0.383.0` | Consistent 1.5px-stroke icon set, tree-shakeable, matches the Linear/Notion aesthetic family. |
@@ -139,8 +158,7 @@ GoalFlow is currently a **fully client-side single-page application**. There is 
 │                                            ▼                     │
 │                              ┌──────────────────────┐            │
 │                              │   AppShell.jsx        │           │
-│                              │ Sidebar + useOutlet() │           │
-│                              │ (route transitions)   │           │
+│                              │ Sidebar + {children}  │           │
 │                              └───────────┬───────────┘           │
 │                                          │                       │
 │      ┌───────────────┬───────────────────┼───────────────┬──────┴──────┐
@@ -153,12 +171,12 @@ GoalFlow is currently a **fully client-side single-page application**. There is 
 │                     │   useGoalStore (Zustand)  │
 │                     │  goals / milestones /     │
 │                     │  order / activity / ui    │
+│                     │  (Persisted via localStorage)│
 │                     └─────────────┬─────────────┘
 │                                   ▼
 │                     ┌─────────────────────────┐
 │                     │   mockData.js (seed)      │
-│                     │   in-memory only,          │
-│                     │   no network, no persistence│
+│                     │   Loaded on factory reset  │
 │                     └─────────────────────────┘
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -190,7 +208,16 @@ never stored redundantly.
 
 ### 4.3 Why no backend yet
 
-The brief's deliverable was the front-end application; the data layer was deliberately built **behind a clean Zustand interface** (`src/store/useGoalStore.js`) specifically so it can be swapped for real persistence without touching any component. Every component reads/writes through store actions, never through `mockData.js` directly (except the store's own initialization) — this is the seam where Phase 1/2 of the roadmap (§19) plugs in.
+The brief's deliverable was the front-end application; the data layer was deliberately built **behind a clean Zustand interface** (`src/store/useGoalStore.js`) specifically so it can be swapped for real persistence without touching any component. Currently, the Zustand store uses `persist` middleware to save state to `localStorage`, giving the illusion of a full backend. Every component reads/writes through store actions, never through `mockData.js` directly — this is the seam where Phase 2 of the roadmap plugs in.
+
+### 4.4 Phase 1: Synchronization & Polish
+As of Version 1.1.0, the application has successfully transitioned from a "mock UI" to a fully functional client-side app:
+- **Streaks Engine:** `calculateStreaks` accurately computes `currentStreak` and `longestStreak` from `completedAt` timestamps, updating the Dashboard and Sidebar live.
+- **Analytics Charts:** The Weekly Momentum area chart and Monthly Achievements bar chart are wired to your actual activity history.
+- **Achievement Badges:** Badges (e.g. "10-Day Streak", "First Goal Achieved") dynamically lock/unlock based on your real calculated metrics.
+- **Mobile Responsive Layout:** The Sidebar intelligently collapses into a slide-over Hamburger menu on mobile breakpoints.
+- **Toasts:** Global toast notifications (`sonner`) trigger upon Goal creations, edits, deletions, and profile updates.
+- **Developer Reset Zone:** A manual factory reset button was added to Settings > Advanced to reset the local storage back to the original `mockData.js` seed.
 
 ---
 
@@ -402,3 +429,62 @@ When a user selects `+ Custom category...` and types a label (e.g. "Fitness"):
 2. The ID is run through a deterministic hashing algorithm.
 3. The hash inherently binds the category to one of the 4 strict semantic design tokens (`moss`, `ember`, `indigo`, `amber`).
 This guarantees that user-generated tags look exactly as professional as the hardcoded defaults, without requiring a complex UI color picker or running the risk of unreadable contrast. Custom categories are persisted in the `useGoalStore` and automatically propagate to board filters and Analytics charts.
+
+### Full CRUD Lifecycle
+A core principle of the UX is that any user-created data must be mutable and destructible. 
+- **Milestones**: Feature inline editing via hover actions. A `Pencil` icon transforms the row into an `<input>` for seamless typo correction. A `Trash` icon deletes the milestone immediately.
+- **Goals**: The `GoalDetails` page features a Settings gear to launch `EditGoalDialog` (allowing core modifications to Title, Date, etc.) and a Trash icon to delete the goal entirely. 
+- **Cascading Deletes**: `deleteGoal` in `useGoalStore` automatically loops through and deletes all child milestones to guarantee no memory leaks or orphaned objects.
+
+### Global Toast Notifications
+All successful user actions (Saving Settings, Creating a Goal, Deleting a Goal) are acknowledged with a subtle toast notification in the bottom right corner. We use `sonner` for rich, animated, and accessible toasts that don't block the UI.
+
+### Global Command Palette
+To support power users, GoalFlow implements a global Command Palette (`CommandMenu.jsx` powered by `cmdk`).
+- Triggered instantly from anywhere via `Cmd+K` or `Ctrl+K`.
+- Features rapid navigation across core pages (Dashboard, Board, Analytics, Settings).
+- Permits instant launching of the New Goal Modal.
+- Dynamically indexes all active goals, allowing users to type a goal's name to immediately navigate to its details page.
+
+### Visceral Rewards (Confetti)
+To drive engagement and user delight, achieving a goal physically celebrates the user. 
+- When a goal is moved to the "Achieved" status (either via drag-and-drop or status dropdowns), `canvas-confetti` fires a realistic confetti burst.
+- This is deeply integrated into `useGoalStore` and automatically respects the user's `preferences.notifications.celebrations` setting.
+
+### Rich Text Goal Notes
+Goal details include a Notion-style Rich Text Editor powered by `tiptap` and `@tailwindcss/typography`.
+- Replaces standard `<textarea>` for much higher fidelity context tracking.
+- Supports bold, italic, bullet lists, ordered lists, and blockquotes.
+- Saves raw HTML directly into the Zustand store for immediate rendering.
+
+### Mobile Responsive Drawer
+On screens smaller than `lg` (1024px), the left Sidebar seamlessly transforms from a static column into a slide-over mobile drawer.
+- A Hamburger menu dynamically appears in the `TopBar`.
+- Tapping it toggles a global `mobileSidebarOpen` state in `useGoalStore`.
+- The Sidebar slides in from the left over a dark blurred backdrop, and automatically dismisses itself when a navigation link is clicked.
+
+---
+
+## 8. Routing & Animation Architecture
+
+### React Router + Framer Motion Conflict
+GoalFlow utilizes Framer Motion's `<AnimatePresence mode="wait">` to orchestrate 180ms fade/slide transitions between pages.
+Initially, the layout relied on `useOutlet()`. However, React Router v6 context updates immediately upon navigation, which caused exiting components to crash silently when they attempted to read the *new* route context while rendering the *old* DOM.
+
+### The `<AnimatedRoutes>` Pattern
+To resolve this, the architecture uses the officially supported `location` cloning pattern in `App.jsx`:
+```jsx
+function AnimatedRoutes() {
+  const location = useLocation()
+  return (
+    <AnimatePresence mode="wait">
+      {/* Explicit location prop freezes the routing context for exiting pages */}
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Dashboard /></PageTransition>} />
+        {/* ... */}
+      </Routes>
+    </AnimatePresence>
+  )
+}
+```
+Every route is wrapped in a `<PageTransition>` component to ensure DRY motion variants. `AppShell` acts strictly as a static layout shell, never unmounting the Sidebar during page transitions.

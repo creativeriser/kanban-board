@@ -3,16 +3,85 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-canvas: 247 248 250;
+    --color-surface: 255 255 255;
+    --color-border: 230 232 236;
+    --color-ink-950: 14 16 20;
+    --color-ink-900: 20 22 26;
+    --color-ink-700: 54 58 68;
+    --color-ink-600: 86 91 102;
+    --color-ink-400: 148 152 163;
+    --color-ink-200: 214 217 223;
+    
+    --color-moss-100: 227 240 236;
+    --color-moss-300: 155 201 184;
+    --color-moss-500: 46 138 108;
+    --color-moss-600: 27 111 92;
+    --color-moss-700: 21 87 71;
+
+    --color-ember-100: 255 231 224;
+    --color-ember-400: 255 138 107;
+    --color-ember-500: 255 107 74;
+    --color-ember-600: 226 80 47;
+
+    --color-indigo-100: 232 234 251;
+    --color-indigo-400: 124 138 232;
+    --color-indigo-500: 76 95 213;
+    --color-indigo-600: 59 75 184;
+
+    --color-amber-100: 251 237 215;
+    --color-amber-400: 240 188 114;
+    --color-amber-500: 232 162 61;
+    --color-amber-600: 201 133 42;
+  }
+
+  .dark {
+    --color-canvas: 10 10 12;
+    --color-surface: 20 22 26;
+    --color-border: 42 46 54;
+    
+    --color-ink-950: 255 255 255;
+    --color-ink-900: 238 240 242;
+    --color-ink-700: 198 202 210;
+    --color-ink-600: 148 152 163;
+    --color-ink-400: 86 91 102;
+    --color-ink-200: 42 46 54;
+
+    --color-moss-100: 18 36 30;
+    --color-moss-300: 46 138 108;
+    --color-moss-500: 155 201 184;
+    --color-moss-600: 227 240 236;
+    --color-moss-700: 255 255 255;
+
+    --color-ember-100: 48 17 9;
+    --color-ember-400: 226 80 47;
+    --color-ember-500: 255 107 74;
+    --color-ember-600: 255 138 107;
+
+    --color-indigo-100: 18 20 54;
+    --color-indigo-400: 59 75 184;
+    --color-indigo-500: 76 95 213;
+    --color-indigo-600: 124 138 232;
+
+    --color-amber-100: 51 32 6;
+    --color-amber-400: 201 133 42;
+    --color-amber-500: 232 162 61;
+    --color-amber-600: 240 188 114;
+  }
+
   * {
     @apply border-border;
   }
 
   html {
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   body {
     @apply bg-canvas text-ink-900 font-sans antialiased;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
   }
 
   ::selection {

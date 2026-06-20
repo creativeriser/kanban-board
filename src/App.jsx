@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Toaster } from 'sonner'
 import { AppShell } from './components/layout/AppShell'
 import Dashboard from './pages/Dashboard'
 import GoalsBoard from './pages/GoalsBoard'
@@ -8,35 +9,16 @@ import Analytics from './pages/Analytics'
 import Achievements from './pages/Achievements'
 import Settings from './pages/Settings'
 
-function PageTransition({ children }) {
-  return (
-    <motion.main
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -4 }}
-      transition={{ duration: 0.18, ease: 'easeOut' }}
-      className="h-full"
-    >
-      {children}
-    </motion.main>
-  )
-}
-
 function AnimatedRoutes() {
-  const location = useLocation()
-  
   return (
-    <AnimatePresence mode="wait">
-      {/* Passing location here explicitly preserves routing context for exiting pages! */}
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Dashboard /></PageTransition>} />
-        <Route path="/board" element={<PageTransition><GoalsBoard /></PageTransition>} />
-        <Route path="/goals/:goalId" element={<PageTransition><GoalDetails /></PageTransition>} />
-        <Route path="/analytics" element={<PageTransition><Analytics /></PageTransition>} />
-        <Route path="/achievements" element={<PageTransition><Achievements /></PageTransition>} />
-        <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
-      </Routes>
-    </AnimatePresence>
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/board" element={<GoalsBoard />} />
+      <Route path="/goals/:goalId" element={<GoalDetails />} />
+      <Route path="/analytics" element={<Analytics />} />
+      <Route path="/achievements" element={<Achievements />} />
+      <Route path="/settings" element={<Settings />} />
+    </Routes>
   )
 }
 
@@ -44,8 +26,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppShell>
-        <AnimatedRoutes />
+        <ErrorBoundary fallbackRender={({ error }) => (
+          <div className="p-10 text-red-600">
+            <h1 className="text-xl font-bold">App Crashed!</h1>
+            <pre className="mt-4 bg-red-50 p-4 rounded text-xs">{error.message}</pre>
+            <pre className="mt-2 bg-red-50 p-4 rounded text-xs">{error.stack}</pre>
+          </div>
+        )}>
+          <AnimatedRoutes />
+        </ErrorBoundary>
       </AppShell>
+      <Toaster position="bottom-right" richColors />
     </BrowserRouter>
   )
 }

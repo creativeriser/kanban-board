@@ -3,6 +3,8 @@ import { LayoutDashboard, Kanban, BarChart3, Trophy, Settings, Sprout, ChevronsL
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '../../lib/utils'
+import { useGoalStore } from '../../store/useGoalStore'
+import { calculateStreaks } from '../../lib/calculations'
 
 const NAV = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -14,12 +16,18 @@ const NAV = [
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
+  const mobileSidebarOpen = useGoalStore((s) => s.ui.mobileSidebarOpen)
+  const setMobileSidebarOpen = useGoalStore((s) => s.setMobileSidebarOpen)
+  const milestonesById = useGoalStore((s) => s.milestones)
+  const { currentStreak } = calculateStreaks(milestonesById)
 
   return (
     <aside
       className={cn(
-        'sticky top-0 flex h-screen shrink-0 flex-col bg-ink-950 border-r border-white/5 transition-all duration-300 ease-in-out',
-        collapsed ? 'w-[72px]' : 'w-[250px]'
+        'fixed inset-y-0 left-0 z-50 flex h-screen flex-col bg-ink-950 border-r border-white/5 transition-all duration-300 ease-in-out lg:sticky lg:top-0',
+        mobileSidebarOpen ? 'w-[250px] translate-x-0' : '-translate-x-full lg:translate-x-0',
+        collapsed && !mobileSidebarOpen ? 'lg:w-[72px]' : 'lg:w-[250px]',
+        mobileSidebarOpen && 'shadow-2xl'
       )}
     >
       <div className="flex h-[72px] items-center gap-3 px-5 border-b border-white/5">
@@ -35,6 +43,7 @@ export function Sidebar() {
             key={to}
             to={to}
             end={end}
+            onClick={() => setMobileSidebarOpen(false)}
             className={({ isActive }) =>
               cn(
                 'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-medium transition-colors outline-none',
@@ -84,8 +93,8 @@ export function Sidebar() {
             
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-base drop-shadow-sm">🔥</span>
-                <p className="font-display text-[13px] font-semibold tracking-wide text-white">12-Day Streak</p>
+                <span className="text-base drop-shadow-sm">{currentStreak >= 3 ? '🔥' : '🌱'}</span>
+                <p className="font-display text-[13px] font-semibold tracking-wide text-white">{currentStreak}-Day Streak</p>
               </div>
               <p className="text-[12px] leading-relaxed text-ink-400/90">Consistency builds momentum. Keep showing up!</p>
             </div>
@@ -93,7 +102,7 @@ export function Sidebar() {
         )}
         <button
           onClick={() => setCollapsed((c) => !c)}
-          className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-ink-400 transition-colors hover:bg-white/[0.04] hover:text-white"
+          className="group hidden lg:flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-ink-400 transition-colors hover:bg-white/[0.04] hover:text-white"
         >
           <ChevronsLeft size={18} className={cn('shrink-0 transition-transform duration-300', collapsed && 'rotate-180')} />
           {!collapsed && 'Collapse sidebar'}

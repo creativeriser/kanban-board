@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Dialog } from '../ui/Dialog'
 import { Input, Textarea, Select } from '../ui/Input'
 import { Button } from '../ui/Button'
@@ -35,12 +36,19 @@ export function NewGoalDialog({ open, onClose }) {
       if (newId) finalCategoryId = newId
     }
 
+    const parsedDate = new Date(form.dueDate)
+    const validDate = isNaN(parsedDate.getTime()) ? new Date().toISOString() : parsedDate.toISOString()
+
     addGoal({
       ...form,
       category: finalCategoryId,
-      dueDate: new Date(form.dueDate).toISOString(),
+      dueDate: validDate,
     })
     
+    toast.success('Goal created', {
+      description: `"${form.title}" added to planning.`,
+    })
+
     setForm({ title: '', description: '', category: categories[0]?.id || '', priority: 'medium', dueDate: today })
     setCustomCategory('')
     onClose()

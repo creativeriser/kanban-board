@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import {
   goals as seedGoals,
   milestones as seedMilestones,
@@ -7,13 +8,23 @@ import {
   CATEGORIES,
   STATUSES,
 } from '../lib/mockData'
-import { uid } from '../lib/utils'
+import { uid, triggerConfetti } from '../lib/utils'
 
-export const useGoalStore = create((set, get) => ({
-  goals: seedGoals,
-  milestones: seedMilestones,
-  order: initialGoalOrder, // { [status]: [goalId, ...] }
-  activity: activityFeed,
+export const useGoalStore = create(
+  persist(
+    (set, get) => ({
+      goals: seedGoals,
+      milestones: seedMilestones,
+      order: initialGoalOrder, // { [status]: [goalId, ...] }
+      activity: activityFeed,
+
+  addActivity: (text, type = 'status', goalId = null) =>
+    set((s) => ({
+      activity: [
+        { id: uid('a'), goalId, text, type, time: new Date().toISOString() },
+        ...s.activity,
+      ].slice(0, 20),
+    })),
 
   user: {
     name: 'Jordan Avery',
@@ -21,11 +32,31 @@ export const useGoalStore = create((set, get) => ({
     timezone: 'pst',
   },
 
+  preferences: {
+    notifications: {
+      deadline: true,
+      weekly: true,
+      streak: true,
+      celebrations: true,
+    },
+    appearance: {
+      theme: 'light',
+      accent: '#1B6F5C',
+      density: 'comfortable',
+    },
+    privacy: {
+      publicProfile: false,
+      shareAnalytics: false,
+    }
+  },
+
   ui: {
     search: '',
     priorityFilter: null, // 'high' | 'medium' | 'low' | null
     categoryFilter: null, // category id | null
     sortBy: 'priority', // 'priority' | 'dueDate' | 'alphabetical'
+    mobileSidebarOpen: false,
+    newGoalModalOpen: false,
   },
 
   setSearch: (search) => set((s) => ({ ui: { ...s.ui, search } })),
@@ -34,6 +65,8 @@ export const useGoalStore = create((set, get) => ({
   setCategoryFilter: (categoryFilter) =>
     set((s) => ({ ui: { ...s.ui, categoryFilter: s.ui.categoryFilter === categoryFilter ? null : categoryFilter } })),
   setSortBy: (sortBy) => set((s) => ({ ui: { ...s.ui, sortBy } })),
+  setMobileSidebarOpen: (open) => set((s) => ({ ui: { ...s.ui, mobileSidebarOpen: open } })),
+  setNewGoalModalOpen: (open) => set((s) => ({ ui: { ...s.ui, newGoalModalOpen: open } })),
   clearFilters: () => set((s) => ({ ui: { ...s.ui, search: '', priorityFilter: null, categoryFilter: null } })),
 
   // Move a goal to a new status/column, optionally at a specific index
@@ -50,12 +83,26 @@ export const useGoalStore = create((set, get) => ({
       }
       order[toStatus] = targetList
 
+      const newActivity = {
+        id: uid('a'),
+        goalId: goalId,
+        text: `Moved "${s.goals[goalId].title}" to ${STATUSES.find(st => st.id === toStatus)?.label || toStatus}`,
+        type: toStatus === 'achieved' ? 'achieved' : 'status',
+        time: new Date().toISOString()
+      }
+
+      // Fire confetti outside state setter loop if applicable
+      if (toStatus === 'achieved' && fromStatus !== 'achieved' && s.preferences?.notifications?.celebrations) {
+        setTimeout(triggerConfetti, 50)
+      }
+
       return {
         order,
         goals: {
           ...s.goals,
           [goalId]: { ...s.goals[goalId], status: toStatus },
         },
+        activity: [newActivity, ...s.activity].slice(0, 20)
       }
     }),
 
@@ -72,7 +119,7 @@ export const useGoalStore = create((set, get) => ({
     set((s) => {
       const m = s.milestones[milestoneId]
       const nowDone = !m.done
-      return {
+      const updates = {
         milestones: {
           ...s.milestones,
           [milestoneId]: {
@@ -82,6 +129,21 @@ export const useGoalStore = create((set, get) => ({
           },
         },
       }
+
+      if (nowDone) {
+        updates.activity = [
+          {
+            id: uid('a'),
+            goalId: m.goalId,
+            text: `Completed milestone: "${m.title}"`,
+            type: 'achieved',
+            time: new Date().toISOString()
+          },
+          ...s.activity
+        ].slice(0, 20)
+      }
+
+      return updates
     }),
 
   addMilestone: (goalId, title) =>
@@ -139,7 +201,20 @@ export const useGoalStore = create((set, get) => ({
         [goal.status]: (s.order[goal.status] || []).filter((id) => id !== goalId),
       }
 
-      return { goals: newGoals, milestones: newMilestones, order: newOrder }
+      const newActivity = {
+        id: uid('a'),
+        goalId: goalId,
+        text: `Deleted goal: "${goal.title}"`,
+        type: 'amber',
+        time: new Date().toISOString()
+      }
+
+      return { 
+        goals: newGoals, 
+        milestones: newMilestones, 
+        order: newOrder,
+        activity: [newActivity, ...s.activity].slice(0, 20)
+      }
     }),
 
   updateGoal: (goalId, patch) =>
@@ -150,6 +225,14 @@ export const useGoalStore = create((set, get) => ({
 
   updateUser: (patch) =>
     set((s) => ({ user: { ...s.user, ...patch } })),
+
+  updatePreferences: (category, patch) =>
+    set((s) => ({
+      preferences: {
+        ...(s.preferences || {}),
+        [category]: { ...((s.preferences || {})[category] || {}), ...patch },
+      },
+    })),
 
   categories: CATEGORIES,
 
@@ -186,11 +269,33 @@ export const useGoalStore = create((set, get) => ({
         milestoneIds: [],
         notes: '',
       }
+      const newActivity = {
+        id: uid('a'),
+        goalId: id,
+        text: `Created new goal: "${title}"`,
+        type: 'status',
+        time: new Date().toISOString()
+      }
+
       return {
         goals: { ...s.goals, [id]: goal },
         order: { ...s.order, planning: [...(s.order.planning || []), id] },
+        activity: [newActivity, ...s.activity].slice(0, 20)
       }
     }),
-}))
+    
+  resetData: () => {
+    set({
+      goals: seedGoals,
+      milestones: seedMilestones,
+      order: initialGoalOrder,
+      activity: activityFeed,
+    })
+  }
+  }),
+  {
+    name: 'goalflow-storage',
+  }
+))
 
 export { STATUSES }

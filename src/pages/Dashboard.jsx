@@ -7,15 +7,14 @@ import { TopBar } from '../components/layout/TopBar'
 import { GrowthRing } from '../components/ui/GrowthRing'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
-import { NewGoalDialog } from '../components/goals/NewGoalDialog'
+
 import { PriorityDot, CategoryTag } from '../components/goals/PriorityDot'
 import { useGoalStore } from '../store/useGoalStore'
-import { goalProgress, dueMeta, isUpcoming } from '../lib/calculations'
-import { weeklyMomentum, currentStreak } from '../lib/mockData'
+import { goalProgress, dueMeta, isUpcoming, calculateStreaks, calculateWeeklyMomentum } from '../lib/calculations'
 import { cn } from '../lib/utils'
 
 export default function Dashboard() {
-  const [newGoalOpen, setNewGoalOpen] = useState(false)
+  const setNewGoalModalOpen = useGoalStore((s) => s.setNewGoalModalOpen)
   const goals = useGoalStore((s) => s.goals)
   const milestonesById = useGoalStore((s) => s.milestones)
   const activity = useGoalStore((s) => s.activity)
@@ -28,6 +27,9 @@ export default function Dashboard() {
     if (!active.length) return 0
     return Math.round(active.reduce((sum, g) => sum + goalProgress(g, milestonesById), 0) / active.length)
   }, [active, milestonesById])
+
+  const { currentStreak } = useMemo(() => calculateStreaks(milestonesById), [milestonesById])
+  const weeklyMomentum = useMemo(() => calculateWeeklyMomentum(milestonesById), [milestonesById])
 
   const upcoming = goalList
     .filter((g) => g.status !== 'achieved' && isUpcoming(g.dueDate, 21))
@@ -62,14 +64,13 @@ export default function Dashboard() {
               <p className="mb-8 max-w-sm text-[15px] leading-relaxed text-ink-600">
                 GoalFlow is a space to define your ambitions and break them into actionable milestones. It's time to build momentum.
               </p>
-              <Button variant="brand" size="lg" onClick={() => setNewGoalOpen(true)}>
+              <Button variant="brand" size="lg" onClick={() => setNewGoalModalOpen(true)}>
                 <Plus size={18} />
                 Create your first goal
               </Button>
             </Card>
           </motion.div>
         </div>
-        <NewGoalDialog open={newGoalOpen} onClose={() => setNewGoalOpen(false)} />
       </div>
     )
   }

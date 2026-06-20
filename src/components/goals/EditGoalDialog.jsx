@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Dialog } from '../ui/Dialog'
 import { Input, Textarea, Select } from '../ui/Input'
 import { Button } from '../ui/Button'
@@ -47,12 +48,16 @@ export function EditGoalDialog({ open, onClose, goal }) {
       if (newId) finalCategoryId = newId
     }
 
+    const parsedDate = new Date(form.dueDate)
+    const validDate = isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString()
+
     updateGoal(goal.id, {
       ...form,
       category: finalCategoryId,
-      dueDate: new Date(form.dueDate).toISOString(),
+      dueDate: validDate,
     })
     
+    toast.success('Goal updated')
     onClose()
   }
 

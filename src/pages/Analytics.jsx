@@ -18,8 +18,7 @@ import { TrendingUp, Target, Flame, Award } from 'lucide-react'
 import { TopBar } from '../components/layout/TopBar'
 import { Card } from '../components/ui/Card'
 import { useGoalStore } from '../store/useGoalStore'
-import { goalProgress } from '../lib/calculations'
-import { weeklyMomentum, monthlyAchievements, currentStreak, longestStreak } from '../lib/mockData'
+import { goalProgress, calculateStreaks, calculateWeeklyMomentum, calculateMonthlyAchievements } from '../lib/calculations'
 
 const CATEGORY_HEX = {
   career: '#4C5FD5',
@@ -42,6 +41,10 @@ export default function Analytics() {
   const milestonesById = useGoalStore((s) => s.milestones)
   const categories = useGoalStore((s) => s.categories)
   const goalList = Object.values(goals)
+  
+  const { currentStreak, longestStreak } = useMemo(() => calculateStreaks(milestonesById), [milestonesById])
+  const weeklyMomentum = useMemo(() => calculateWeeklyMomentum(milestonesById), [milestonesById])
+  const monthlyAchievements = useMemo(() => calculateMonthlyAchievements(goals, milestonesById), [goals, milestonesById])
 
   const completionByCategory = useMemo(() => {
     const byCategory = {}
@@ -163,9 +166,9 @@ export default function Analytics() {
           <Card className="p-6">
             <p className="mb-1 font-display text-[15px] font-semibold text-ink-900">Performance Insights</p>
             <ul className="mt-3 flex flex-col gap-2 text-[13px] text-ink-600">
-              <li>• Health and Career categories show the strongest average completion this quarter.</li>
-              <li>• Your weekly momentum is trending upward — milestone completions are up over the trend line.</li>
-              <li>• At the current pace, your 3 remaining high-priority goals are forecast to reach 80%+ within 6 weeks.</li>
+              <li>• {completionByCategory.length > 0 ? `${completionByCategory.sort((a,b)=>b.rate-a.rate)[0]?.category} is your strongest category.` : 'Start adding goals to see insights.'}</li>
+              <li>• {weeklyMomentum[7].completed > weeklyMomentum[6].completed ? 'Your weekly momentum is trending upward — milestone completions are up.' : 'Weekly momentum is steady or dipping. Try to complete a small milestone today.'}</li>
+              <li>• {currentStreak > 3 ? `You are on a ${currentStreak}-day streak! Keep up the incredible consistency.` : 'Consistency builds momentum. Try to build a 3-day streak this week.'}</li>
             </ul>
           </Card>
         </motion.div>
