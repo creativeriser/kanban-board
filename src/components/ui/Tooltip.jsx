@@ -25,7 +25,7 @@ export function Tooltip({ label, children, side = 'top' }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.12 }}
             className={cn(
-              'pointer-events-none absolute z-50 whitespace-nowrap rounded bg-ink-950 px-2 py-1 text-[11px] font-medium text-white shadow-raised',
+              'pointer-events-none absolute z-50 whitespace-nowrap rounded bg-ink-900 px-2 py-1 text-[11px] font-medium text-canvas shadow-raised',
               positions[side]
             )}
           >

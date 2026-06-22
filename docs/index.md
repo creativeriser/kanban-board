@@ -2,8 +2,8 @@
 
 **Product:** GoalFlow — Personal Goal Management Kanban Platform
 **Document type:** Combined Software Design Document (SDD) + Design System Reference
-**Version:** 1.1.0
-**Status:** Front-end complete (client-only) — Phase 1 dynamic logic & local persistence implemented.
+**Version:** 1.2.0
+**Status:** Phase 2 Complete (True OLED Dark Mode, Command Palette, Rich Text Editor, Confetti). Ready for Backend.
 **Last updated:** June 2026
 
 ---
@@ -128,6 +128,7 @@ Instead: a cool warm-neutral light canvas (`#F7F8FA`), a dark ink sidebar (`#0E1
 | Styling | Tailwind CSS | `^3.4.3` | Utility-first, design tokens defined once in `tailwind.config.js` (see §6), no separate CSS-in-JS runtime cost. |
 | Dates | date-fns | `^3.6.0` | Tree-shakeable, immutable, used for all date formatting/diffing (`formatDueDate`, `dueMeta`). |
 | Class merging | clsx | `^2.1.1` | Wrapped as `cn()` in `src/lib/utils.js` for conditional className composition. |
+| Testing | Playwright | `^1.61.0` | End-to-end browser testing for critical paths and store persistence. |
 
 **Fonts** (loaded via Google Fonts `<link>` in `index.html`, not npm packages): Fraunces (display), Inter (UI/body), JetBrains Mono (data/stats).
 
@@ -210,13 +211,15 @@ never stored redundantly.
 
 The brief's deliverable was the front-end application; the data layer was deliberately built **behind a clean Zustand interface** (`src/store/useGoalStore.js`) specifically so it can be swapped for real persistence without touching any component. Currently, the Zustand store uses `persist` middleware to save state to `localStorage`, giving the illusion of a full backend. Every component reads/writes through store actions, never through `mockData.js` directly — this is the seam where Phase 2 of the roadmap plugs in.
 
-### 4.4 Phase 1: Synchronization & Polish
-As of Version 1.1.0, the application has successfully transitioned from a "mock UI" to a fully functional client-side app:
+### 4.4 Phase 1 & 2: Synchronization & Polish
+As of Version 1.2.0, the application has successfully transitioned from a "mock UI" to a fully functional client-side app with premium SaaS features:
+- **True OLED Dark Mode Engine:** A custom CSS variable engine allows instant, zero-lag switching between Light Mode and OLED Dark Mode without React re-renders.
+- **Global Command Palette:** Instantly accessible via `Cmd+K`, allowing rapid navigation and goal searching.
+- **Rich Text Editing:** Goal notes utilize a powerful `tiptap` editor for Markdown-like rich text.
+- **Visceral Rewards:** Hitting an "Achieved" status triggers an explosive, satisfying confetti burst via `canvas-confetti`.
 - **Streaks Engine:** `calculateStreaks` accurately computes `currentStreak` and `longestStreak` from `completedAt` timestamps, updating the Dashboard and Sidebar live.
 - **Analytics Charts:** The Weekly Momentum area chart and Monthly Achievements bar chart are wired to your actual activity history.
 - **Achievement Badges:** Badges (e.g. "10-Day Streak", "First Goal Achieved") dynamically lock/unlock based on your real calculated metrics.
-- **Mobile Responsive Layout:** The Sidebar intelligently collapses into a slide-over Hamburger menu on mobile breakpoints.
-- **Toasts:** Global toast notifications (`sonner`) trigger upon Goal creations, edits, deletions, and profile updates.
 - **Developer Reset Zone:** A manual factory reset button was added to Settings > Advanced to reset the local storage back to the original `mockData.js` seed.
 
 ---
@@ -465,26 +468,30 @@ On screens smaller than `lg` (1024px), the left Sidebar seamlessly transforms fr
 
 ---
 
-## 8. Routing & Animation Architecture
+## 8. Routing & Error Handling Architecture
 
-### React Router + Framer Motion Conflict
-GoalFlow utilizes Framer Motion's `<AnimatePresence mode="wait">` to orchestrate 180ms fade/slide transitions between pages.
-Initially, the layout relied on `useOutlet()`. However, React Router v6 context updates immediately upon navigation, which caused exiting components to crash silently when they attempted to read the *new* route context while rendering the *old* DOM.
+### The `ErrorBoundary` Pattern
+Because the application relies heavily on dynamic `localStorage` persistence, it is susceptible to "data drift" (where the user's saved data structure doesn't perfectly match a newly deployed version of the app). 
+To prevent "White Screens of Death", `App.jsx` wraps the entire routing layer in a strict `react-error-boundary`. If any component throws an uncaught error, the Error Boundary catches it and renders a safe, isolated fallback UI displaying the error message and stack trace.
 
-### The `<AnimatedRoutes>` Pattern
-To resolve this, the architecture uses the officially supported `location` cloning pattern in `App.jsx`:
+### Routing Stability (Removed Page Transitions)
+Initially, GoalFlow utilized Framer Motion's `<AnimatePresence mode="wait">` to orchestrate fade/slide transitions between pages. However, React Router v6 context updates immediately upon navigation, which caused exiting components to occasionally "freeze" or render blank screens during rapid user navigation.
+To guarantee flawless performance and interaction speed, complex route transition animations were removed. Routes now instantly swap standard DOM subtrees:
 ```jsx
 function AnimatedRoutes() {
-  const location = useLocation()
   return (
-    <AnimatePresence mode="wait">
-      {/* Explicit location prop freezes the routing context for exiting pages */}
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Dashboard /></PageTransition>} />
-        {/* ... */}
-      </Routes>
-    </AnimatePresence>
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/board" element={<GoalsBoard />} />
+      {/* ... */}
+    </Routes>
   )
 }
 ```
-Every route is wrapped in a `<PageTransition>` component to ensure DRY motion variants. `AppShell` acts strictly as a static layout shell, never unmounting the Sidebar during page transitions.
+Micro-animations (staggered lists, card hovers, command palette scaling) were retained to provide the premium feel without comprising core navigation stability.
+
+---
+
+## 18. Testing Strategy (Recommended)
+
+With the introduction of Playwright (`^1.61.0`), GoalFlow now supports end-to-end browser testing. Test files (e.g. `test-browser.js`, `test-store2.js`) simulate user flows and verify store persistence, ensuring the robustness of critical paths like goal creation, drag-and-drop interactions, and the accurate calculation of metrics.

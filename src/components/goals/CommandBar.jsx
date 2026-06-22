@@ -30,7 +30,7 @@ export function CommandBar({ onNewGoal }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search goals..."
-            className="h-9 w-full rounded border border-border bg-white pl-9 pr-3 text-sm placeholder:text-ink-400 focus:border-moss-500 focus:outline-none"
+            className="h-9 w-full rounded border border-border bg-surface pl-9 pr-3 text-sm placeholder:text-ink-400 focus:border-moss-500 focus:outline-none"
           />
         </div>
 
@@ -54,13 +54,13 @@ export function CommandBar({ onNewGoal }) {
             key={p.id}
             onClick={() => setPriorityFilter(p.id)}
             className={cn(
-              'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] font-medium transition-colors',
+              'flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors',
               priorityFilter === p.id
-                ? 'border-ink-900 bg-ink-900 text-white'
-                : 'border-border bg-white text-ink-600 hover:border-ink-200'
+                ? 'border-ink-900 bg-ink-900 text-canvas'
+                : 'border-border bg-surface text-ink-600 hover:border-ink-300'
             )}
           >
-            <span className={cn('h-1.5 w-1.5 rounded-full', priorityFilter === p.id ? 'bg-white' : p.dot)} />
+            <span className={cn('h-1.5 w-1.5 rounded-full', priorityFilter === p.id ? 'bg-canvas' : p.dot)} />
             {p.label}
           </button>
         ))}
@@ -70,10 +70,10 @@ export function CommandBar({ onNewGoal }) {
             key={c.id}
             onClick={() => setCategoryFilter(c.id)}
             className={cn(
-              'rounded-full border px-3 py-1 text-[13px] font-medium transition-colors',
+              'rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors',
               categoryFilter === c.id
-                ? 'border-transparent bg-ink-900 text-white'
-                : 'border-border bg-white text-ink-600 hover:bg-canvas'
+                ? 'border-transparent bg-ink-900 text-canvas'
+                : 'border-border bg-surface text-ink-600 hover:bg-canvas'
             )}
           >
             {c.label}

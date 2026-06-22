@@ -14,7 +14,7 @@ export const Input = forwardRef(function Input({ className, label, id, ...props 
         ref={ref}
         id={id}
         className={cn(
-          'h-10 rounded border border-border bg-white px-3 text-sm text-ink-900 placeholder:text-ink-400',
+          'h-10 rounded border border-border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400',
           'transition-colors focus:border-moss-500 focus:outline-none',
           className
         )}
@@ -36,7 +36,7 @@ export const Textarea = forwardRef(function Textarea({ className, label, id, ...
         ref={ref}
         id={id}
         className={cn(
-          'rounded border border-border bg-white px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400',
+          'rounded border border-border bg-surface px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400',
           'transition-colors focus:border-moss-500 focus:outline-none resize-none',
           className
         )}
@@ -59,7 +59,7 @@ export const Select = forwardRef(function Select({ className, label, id, childre
           ref={ref}
           id={id}
           className={cn(
-            'h-10 w-full appearance-none rounded border border-border bg-white px-3 pr-9 text-sm text-ink-900',
+            'h-10 w-full appearance-none rounded border border-border bg-surface px-3 pr-9 text-sm text-ink-900',
             'transition-colors focus:border-moss-500 focus:outline-none',
             className
           )}

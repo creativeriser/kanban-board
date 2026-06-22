@@ -26,7 +26,7 @@ export function MilestoneRow({ milestone, onToggle, onUpdate, onDelete }) {
         aria-label={milestone.done ? 'Mark milestone incomplete' : 'Mark milestone complete'}
         className={cn(
           'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50',
-          milestone.done ? 'border-moss-600 bg-moss-600 text-white' : 'border-ink-200 hover:border-moss-500'
+          milestone.done ? 'border-moss-600 bg-moss-600 text-canvas' : 'border-ink-200 hover:border-moss-500'
         )}
       >
         {milestone.done && <Check size={12} strokeWidth={3} />}
@@ -44,7 +44,7 @@ export function MilestoneRow({ milestone, onToggle, onUpdate, onDelete }) {
                 setDraft(milestone.title)
                 setIsEditing(false)
               }}
-              className="w-full rounded border border-moss-500 bg-white px-2 py-0.5 text-sm font-medium text-ink-900 outline-none"
+              className="w-full rounded border border-moss-500 bg-surface px-2 py-0.5 text-sm font-medium text-ink-900 outline-none"
             />
           </form>
         ) : (

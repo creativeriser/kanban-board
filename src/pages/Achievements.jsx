@@ -40,11 +40,11 @@ export default function Achievements() {
       <div className="px-8 py-6">
         {/* Streak hero */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-          <Card className="overflow-hidden bg-ink-950 p-7">
+          <Card className="overflow-hidden bg-surface border border-border p-7 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-6">
               <div>
                 <p className="text-[12px] font-semibold uppercase tracking-wide text-moss-300">Growth streak</p>
-                <p className="mt-1.5 font-display text-[34px] font-semibold leading-none text-white">{currentStreak} days</p>
+                <p className="mt-1.5 font-display text-[34px] font-semibold leading-none text-ink-900">{currentStreak} days</p>
                 <p className="mt-2 text-[13px] text-ink-400">Longest streak: {longestStreak} days. Keep showing up daily.</p>
               </div>
               <div className="flex gap-1.5">
@@ -54,7 +54,7 @@ export default function Achievements() {
                     initial={{ scaleY: 0.3, opacity: 0 }}
                     animate={{ scaleY: 1, opacity: 1 }}
                     transition={{ delay: i * 0.025 }}
-                    className={cn('h-8 w-2.5 rounded-full', i < currentStreak % 14 || i < 14 ? 'bg-moss-500' : 'bg-white/10')}
+                    className={cn('h-8 w-2.5 rounded-full', i < currentStreak % 14 || i < 14 ? 'bg-moss-500' : 'bg-ink-900/5')}
                   />
                 ))}
               </div>

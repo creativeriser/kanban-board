@@ -83,7 +83,7 @@ export default function Dashboard() {
         action={
           <button
             onClick={() => navigate('/board')}
-            className="inline-flex items-center gap-1.5 rounded bg-ink-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-ink-700"
+            className="inline-flex items-center gap-1.5 rounded bg-ink-900 px-4 py-2 text-sm font-medium text-canvas transition-colors hover:bg-ink-700"
           >
             Go to Board <ArrowUpRight size={15} />
           </button>

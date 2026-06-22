@@ -2,11 +2,11 @@ import { forwardRef } from 'react'
 import { cn } from '../../lib/utils'
 
 const VARIANTS = {
-  primary: 'bg-ink-900 text-white hover:bg-ink-700 shadow-xs',
-  brand: 'bg-moss-600 text-white hover:bg-moss-700 shadow-xs',
-  secondary: 'bg-white text-ink-900 border border-border hover:bg-canvas shadow-xs',
+  primary: 'bg-ink-900 text-canvas hover:bg-ink-800 shadow-xs',
+  brand: 'bg-moss-600 text-canvas hover:bg-moss-700 shadow-xs',
+  secondary: 'bg-surface text-ink-900 border border-border hover:bg-canvas shadow-xs',
   ghost: 'bg-transparent text-ink-600 hover:bg-ink-900/5 hover:text-ink-900',
-  danger: 'bg-white text-ember-600 border border-ember-100 hover:bg-ember-100',
+  danger: 'bg-surface text-ember-600 border border-ember-200 hover:bg-ember-100/50',
 }
 
 const SIZES = {

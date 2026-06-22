@@ -40,4 +40,6 @@ One `DndContext` on the board (`closestCorners` collision). Columns are `useDrop
 
 ## What's mocked vs. real
 
-Everything in this build runs entirely client-side against the Zustand store seeded from `mockData.js` — there's no backend. Creating a goal, adding/toggling milestones, dragging cards, editing notes, and the Settings toggles all update real in-memory state and re-render the relevant charts/rings live; refreshing the page resets to the seed data, since nothing persists yet. Wiring up real persistence (e.g. swapping the store's mutators for API calls, or adding `localStorage`) is the natural next step.
+Everything in this build runs entirely client-side against the Zustand store. There is no backend server. However, **data is persisted locally** via Zustand's `persist` middleware using `localStorage`. Creating a goal, dragging cards, editing rich-text notes, changing themes, and toggling milestones all update real in-memory state and persist across browser refreshes.
+
+If you wish to reset your data back to the original `mockData.js` seed, you can do so in the **Settings > Advanced** panel. Wiring up a real database backend (e.g., Supabase/Firebase) is the natural Phase 3 next step.
