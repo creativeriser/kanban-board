@@ -103,7 +103,7 @@ export function Sidebar() {
             if (mobileSidebarOpen) setMobileSidebarOpen(false)
           }}
           className={cn(
-            "flex w-full items-center gap-2 rounded-md border border-border bg-surface px-2.5 py-1.5 text-left text-[13px] text-ink-500 shadow-sm transition-colors hover:border-ink-300 hover:text-ink-900 dark:bg-ink-900/20 dark:hover:border-ink-700 outline-none focus-visible:ring-2 focus-visible:ring-brand-500 whitespace-nowrap",
+            "flex w-full items-center gap-2 rounded-md border border-border bg-ink-900/5 px-2.5 py-1.5 text-left text-[13px] text-ink-500 shadow-sm transition-colors hover:border-ink-300 hover:text-ink-900 dark:bg-ink-900/20 dark:hover:border-ink-700 outline-none focus-visible:ring-2 focus-visible:ring-brand-500 whitespace-nowrap",
             collapsed && "justify-center px-0"
           )}
         >

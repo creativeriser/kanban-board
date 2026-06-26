@@ -4,8 +4,17 @@ import { formatDistanceToNow } from 'date-fns'
 import { useGoalStore } from '../../store/useGoalStore'
 import { Popover } from '../ui/Popover'
 import { cn } from '../../lib/utils'
+import { useEffect } from 'react'
 
 export function TopBar({ title, subtitle, action }) {
+  useEffect(() => {
+    // One-time migration to force shrink the sidebar for returning users
+    if (!localStorage.getItem('goalflow_sidebar_shrunk_v2')) {
+      useGoalStore.getState().setSidebarWidth(200)
+      localStorage.setItem('goalflow_sidebar_shrunk_v2', 'true')
+    }
+  }, [])
+
   const user = useGoalStore((s) => s.user)
   const setMobileSidebarOpen = useGoalStore((s) => s.setMobileSidebarOpen)
   const theme = useGoalStore((s) => s.preferences?.appearance?.theme || 'light')
@@ -17,7 +26,7 @@ export function TopBar({ title, subtitle, action }) {
     : 'U'
 
   return (
-    <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-border bg-canvas/95 px-4 md:px-8 backdrop-blur-md sticky top-0 z-10">
+    <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-border bg-surface/70 backdrop-blur-xl px-4 md:px-8 sticky top-0 z-10 transition-colors">
       <div className="flex items-center gap-3">
         <button 
           onClick={() => setMobileSidebarOpen(true)}
