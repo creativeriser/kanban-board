@@ -1,6 +1,7 @@
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { GoalCard } from './GoalCard'
+import { useGoalStore } from '../../store/useGoalStore'
 import { cn } from '../../lib/utils'
 
 const STATUS_TONE = {
@@ -12,9 +13,10 @@ const STATUS_TONE = {
 
 export function KanbanColumn({ status, label, goalIds, avgProgress }) {
   const { setNodeRef, isOver } = useDroppable({ id: status, data: { type: 'column', status } })
+  const density = useGoalStore((s) => s.preferences?.appearance?.density || 'comfortable')
 
   return (
-    <div className="flex w-[320px] shrink-0 flex-col">
+    <div className={cn("flex shrink-0 flex-col transition-all", density === 'compact' ? "w-[280px]" : "w-[320px]")}>
       <div className="mb-3 px-0.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -37,7 +39,8 @@ export function KanbanColumn({ status, label, goalIds, avgProgress }) {
         <div
           ref={setNodeRef}
           className={cn(
-            'flex min-h-[140px] flex-1 flex-col gap-3 rounded-lg border border-dashed p-2 transition-colors',
+            'flex min-h-[140px] flex-1 flex-col rounded-lg border border-dashed p-2 transition-colors',
+            density === 'compact' ? 'gap-2' : 'gap-3',
             isOver ? 'border-moss-500/50 bg-moss-100/40' : 'border-transparent'
           )}
         >

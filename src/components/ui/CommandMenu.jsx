@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Command } from 'cmdk'
 import { useNavigate } from 'react-router-dom'
 import { useGoalStore } from '../../store/useGoalStore'
-import { LayoutDashboard, Kanban, LineChart, Trophy, Settings, Plus, ArrowRight } from 'lucide-react'
+import { LayoutDashboard, Kanban, LineChart, Trophy, Settings, Plus, ArrowRight, Moon, Sun, Laptop } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 export function CommandMenu() {
@@ -10,16 +10,26 @@ export function CommandMenu() {
   const navigate = useNavigate()
   const goals = useGoalStore((s) => s.goals)
   const setNewGoalModalOpen = useGoalStore((s) => s.setNewGoalModalOpen)
+  const theme = useGoalStore((s) => s.preferences?.appearance?.theme || 'light')
+  const updatePreferences = useGoalStore((s) => s.updatePreferences)
 
   useEffect(() => {
+    const handleOpen = () => setOpen(true)
+    document.addEventListener('open-command-menu', handleOpen)
+
     const down = (e) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return
+      
+      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
         e.preventDefault()
         setOpen((open) => !open)
       }
     }
     document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
+    return () => {
+      document.removeEventListener('keydown', down)
+      document.removeEventListener('open-command-menu', handleOpen)
+    }
   }, [])
 
   const runCommand = (command) => {
@@ -51,10 +61,34 @@ export function CommandMenu() {
         <Command.Group heading="Actions" className="px-2 py-1.5 text-[12px] font-semibold text-ink-400">
           <Command.Item
             onSelect={() => runCommand(() => setNewGoalModalOpen(true))}
-            className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] font-medium text-ink-900 aria-selected:bg-moss-100 aria-selected:text-moss-700"
+            className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] font-medium text-ink-900 aria-selected:bg-brand-100 aria-selected:text-brand-700"
           >
             <Plus size={16} /> Create new goal
           </Command.Item>
+          {theme !== 'dark' && (
+            <Command.Item
+              onSelect={() => runCommand(() => updatePreferences('appearance', { theme: 'dark' }))}
+              className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] font-medium text-ink-900 aria-selected:bg-ink-900/5"
+            >
+              <Moon size={16} /> Switch to Dark Theme
+            </Command.Item>
+          )}
+          {theme !== 'light' && (
+            <Command.Item
+              onSelect={() => runCommand(() => updatePreferences('appearance', { theme: 'light' }))}
+              className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] font-medium text-ink-900 aria-selected:bg-ink-900/5"
+            >
+              <Sun size={16} /> Switch to Light Theme
+            </Command.Item>
+          )}
+          {theme !== 'system' && (
+            <Command.Item
+              onSelect={() => runCommand(() => updatePreferences('appearance', { theme: 'system' }))}
+              className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] font-medium text-ink-900 aria-selected:bg-ink-900/5"
+            >
+              <Laptop size={16} /> Use System Theme
+            </Command.Item>
+          )}
         </Command.Group>
 
         <Command.Group heading="Navigation" className="mt-2 px-2 py-1.5 text-[12px] font-semibold text-ink-400">

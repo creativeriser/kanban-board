@@ -2,8 +2,8 @@
 
 **Product:** GoalFlow — Personal Goal Management Kanban Platform
 **Document type:** Combined Software Design Document (SDD) + Design System Reference
-**Version:** 1.2.0
-**Status:** Phase 2 Complete (True OLED Dark Mode, Command Palette, Rich Text Editor, Confetti). Ready for Backend.
+**Version:** 1.3.0
+**Status:** Phase 1 UX Polish (Popover, Activity Feed, Notifications). Ready for Phase 2 Backend.
 **Last updated:** June 2026
 
 ---
@@ -80,7 +80,15 @@ We map abstract semantic names to concrete hex values using CSS variables. This 
 
 By using this approach, we guarantee the application will never look "dirty" or inverted during a theme change. The theme defaults to `light` mode but can be instantly toggled on any page via the Sun/Moon icon in the TopBar, or via the `Appearance` section in Settings.
 
-### The Grayscale Spectrum (Ink)Developer Zone in Settings.
+### Premium Dark Mode Methodology (Version 1.2.0+)
+To ensure GoalFlow meets a "world-class, industry-standard" premium aesthetic (reminiscent of Vercel or Linear), Dark Mode is not just a direct color inversion. When building new features or modifying the design system, adhere to these rules:
+
+1.  **Deep, Rich Canvas & Luminous Text**: The dark mode canvas relies on a rich, deep zinc/slate (`#09090B`) instead of a flat gray. Primary typography (`--color-ink-900`) should be a crisp off-white (`#FAFAFA`) to provide a high-contrast, satisfying reading experience without being pure white.
+2.  **Vibrant Dark Mode Accents**: Semantic accent colors (Moss, Ember, Indigo, Amber) are specifically re-tuned in the `.dark` class to be *brighter and more luminous* (e.g., matching Tailwind's `400` or `300` weights) because dark backgrounds demand higher vibrance to pop. Do not let accent colors become muddy.
+3.  **Ambient Depth & Rim Lighting**: Standard drop shadows disappear in dark mode. GoalFlow uses custom shadow utilities (`dark-card`, `dark-raised`, `dark-floating` defined in `tailwind.config.js`) that combine a deep ambient black shadow with a subtle, low-opacity white *top inner shadow*. This creates a "rim light" effect, giving the illusion that the card is physically lifting off the canvas and catching ambient light.
+4.  **Glassmorphism for Floating Elements**: Floating UI elements (like the Sidebar, Command Palette, or active states) use `dark:bg-surface/95 dark:backdrop-blur-xl` or `dark:hover:bg-white/5`. This introduces texture and prevents the UI from feeling like flat blocks of color.
+
+> **Note for Future Add-ons**: Any new element introduced must be tested in both modes. If an element requires a background or shadow in light mode, ensure you apply the equivalent `dark:*` premium design tokens (e.g., `dark:shadow-dark-card`, `dark:bg-white/5` for hover states) to maintain this standard.
 
 ---
 
@@ -221,6 +229,26 @@ As of Version 1.2.0, the application has successfully transitioned from a "mock 
 - **Analytics Charts:** The Weekly Momentum area chart and Monthly Achievements bar chart are wired to your actual activity history.
 - **Achievement Badges:** Badges (e.g. "10-Day Streak", "First Goal Achieved") dynamically lock/unlock based on your real calculated metrics.
 - **Developer Reset Zone:** A manual factory reset button was added to Settings > Advanced to reset the local storage back to the original `mockData.js` seed.
+- **Draggable Milestones:** Added `@dnd-kit/sortable` inside Goal Details, allowing users to rapidly re-order their milestones on the fly.
+- **Global Keyboard Shortcuts:** `c` to instantly launch New Goal, and `/` to instantly open the Command Palette.
+- **Inline Title Editing:** Goal details H1 tags are transparent inputs, allowing seamless instant renaming without modals.
+- **TopBar Popovers:** Interactive `Popover` components integrated into the TopBar for the Notification Bell and Activity Feed, replacing static dummy buttons.
+- **Avatar Navigation:** Clicking the user avatar in the `TopBar` navigates directly to `/settings` rather than opening a redundant dropdown, unifying all profile configurations in one interface.
+- **Sidebar Search Trigger:** A highly visible "Search... ⌘K" button in the Sidebar ensures the global Command Palette is easily discoverable, utilizing a clean custom DOM event (`open-command-menu`).
+- **Fully Interactive Settings:** Previously disabled "Phase 2" toggles across the Notifications and Privacy tabs are now fully functional and completely wired into the Zustand `preferences` local state.
+- **Command Palette Power Features:** In addition to search and navigation, the `Cmd+K` palette now contains global power-user toggles for instant theme switching (Dark/Light/System) and rapid goal creation.
+- **Interactive Quick-Toggles:** Elements like the `PriorityDot` inside Goal Details are now directly interactive, allowing users to rapidly cycle goal priorities without opening the settings modal.
+- **Social "Share" UX:** The Achievements page now features a "Share Profile" action that accurately respects the user's `preferences.privacy.publicProfile` toggle, seamlessly directing users to configure privacy if disabled, or generating a clipboard link if enabled.
+- **Automatic Confetti & Feed Tracking:** Changing a goal's status via dropdowns or drag-and-drop perfectly triggers `canvas-confetti` celebrations and automatically registers the action in the persistent Activity Feed.
+
+### 4.4 Phase 1.6 Advanced Trash UX
+- **Soft-Delete Architecture:** Deleting a goal from the board no longer permanently erases it. It is moved to a `trash` status, preserving its `originalStatus` for perfect restoration via `useGoalStore`'s `restoreGoal` action.
+- **Dedicated Trash Bin Page:** A new `/trash` route allows users to view deleted goals, restore them to their original location, or permanently purge them from local storage via `permanentlyDeleteGoal` and `emptyTrash`.
+- **Dynamic Island Drop Zone:** The drag-to-delete drop zone is a beautifully styled, glassmorphic floating pill at the bottom of the screen that dynamically scales, glows, and morphs when a card is dragged over it, providing extremely satisfying tactile feedback.
+
+### 4.5 Critical Architectural Fixes
+- **Dnd-Kit & Framer-Motion Collision:** To prevent React's `Maximum update depth exceeded` infinite loop crashes, the `layout` prop must never be applied to a `motion.div` that also receives `@dnd-kit/sortable`'s `setNodeRef`. `dnd-kit` natively handles layout transforms during drag events via CSS `transform`, so `framer-motion`'s synchronous layout projections are redundant and cause resize observer loops.
+- **Side-Effect Separation (Confetti):** Visual celebrations like `canvas-confetti` must never be triggered from within global state actions (e.g., `moveGoal` in `useGoalStore`). `dnd-kit` fires state updates aggressively during `onDragOver` to render visual previews. If side effects live in the store, they will fire prematurely during the drag. Instead, side effects are strictly bound to the UI interaction layer (e.g., `onDragEnd` in `GoalsBoard` and `onChange` in `GoalDetails`).
 
 ---
 
@@ -257,6 +285,7 @@ goalflow/
     │   │   ├── Card.jsx
     │   │   ├── Input.jsx        (exports Input, Textarea, Select)
     │   │   ├── Dialog.jsx       Modal, Framer Motion enter/exit
+    │   │   ├── Popover.jsx      Accessible popover with click-outside and Framer Motion enter/exit
     │   │   ├── Tooltip.jsx      (exports Tooltip, EmptyState)
     │   │   └── GrowthRing.jsx   ★ The signature visual element — see §6.7
     │   │
@@ -276,11 +305,12 @@ goalflow/
     │
     └── pages/                     One file per route, composed from the above
         ├── Dashboard.jsx
-        ├── GoalsBoard.jsx
-        ├── GoalDetails.jsx
-        ├── Analytics.jsx
-        ├── Achievements.jsx
-        └── Settings.jsx
+        ├── GoalsBoard.jsx: Dnd-Kit context provider and column layout.
+        ├── GoalDetails.jsx: The detailed view of a single goal and its milestones.
+        ├── Analytics.jsx: Recharts-powered graphs for momentum and category distribution.
+        ├── Achievements.jsx: A gamified view of streaks and earned badges.
+        ├── Settings.jsx: Interactive preferences panel.
+        └── Trash.jsx: The dedicated bin for managing soft-deleted goals.
 ```
 
 **Naming convention:** `ui/` components are domain-agnostic (a `Button` doesn't know what a "goal" is); `goals/` components are domain-specific. If a future feature adds a second domain (e.g. "Habits"), it should get its own `components/habits/` folder following the same split — don't add habit-specific logic into `ui/`.
@@ -424,6 +454,7 @@ The `/settings` route implements strict modern SaaS design patterns (inspired by
 - **Split Layout (`SettingsRow`)**: Forms avoid stacking labels and inputs. Instead, they use a strict side-by-side grid (`sm:flex-row`), locking the label/description to a `240px` width column on the left and the interactive input on the right. 
 - **Edit Mode Protection**: Destructive or sensitive forms (like the Profile tab) default to a read-only state. Users must explicitly click an `Edit Profile` button in the Card Header to unlock the inputs. 
 - **Footer Persistence**: Forms maintain a `border-t bg-canvas/50` explicit footer at the bottom of the card to house the `Save changes` primary action and success banners, completely separated from the scrollable form body.
+- **Global Account Actions**: Destructive/global actions like "Sign Out" are intentionally decoupled from editable form blocks. They reside at the bottom of the left-hand navigation sidebar, ensuring they are universally accessible without cluttering the split-layout form grids.
 
 ### Dynamic Custom Categories
 To ensure the application maintains perfect visual harmony without introducing arbitrary colors, custom categories created by users bypass manual color-picking.
@@ -439,8 +470,15 @@ A core principle of the UX is that any user-created data must be mutable and des
 - **Goals**: The `GoalDetails` page features a Settings gear to launch `EditGoalDialog` (allowing core modifications to Title, Date, etc.) and a Trash icon to delete the goal entirely. 
 - **Cascading Deletes**: `deleteGoal` in `useGoalStore` automatically loops through and deletes all child milestones to guarantee no memory leaks or orphaned objects.
 
-### Global Toast Notifications
-All successful user actions (Saving Settings, Creating a Goal, Deleting a Goal) are acknowledged with a subtle toast notification in the bottom right corner. We use `sonner` for rich, animated, and accessible toasts that don't block the UI.
+### Global Toast Notifications & Soft Deletes
+All successful user actions (Saving Settings, Creating a Goal) are acknowledged with a subtle toast notification.
+**Soft Deletes & Undo**: Destructive actions like deleting a Goal now instantly remove the item from the UI while simultaneously firing a Toast notification containing an **Undo** action. Clicking Undo perfectly restores the entire goal, its milestones, and its exact index/column placement on the Kanban board. 
+
+### Quick Board Actions
+Goals can be deleted entirely from the Kanban board without navigating into the details page. Hovering over a GoalCard exposes a quick `Trash` action for power users.
+
+### Premium Empty States
+To avoid displaying "broken" or empty UI elements (like NaN% charts or blank lists), GoalFlow implements robust graphic zero-states on the `Dashboard`, `Analytics`, and `Achievements` pages when the underlying `useGoalStore` has zero data.
 
 ### Global Command Palette
 To support power users, GoalFlow implements a global Command Palette (`CommandMenu.jsx` powered by `cmdk`).
@@ -495,3 +533,25 @@ Micro-animations (staggered lists, card hovers, command palette scaling) were re
 ## 18. Testing Strategy (Recommended)
 
 With the introduction of Playwright (`^1.61.0`), GoalFlow now supports end-to-end browser testing. Test files (e.g. `test-browser.js`, `test-store2.js`) simulate user flows and verify store persistence, ensuring the robustness of critical paths like goal creation, drag-and-drop interactions, and the accurate calculation of metrics.
+
+---
+
+## 19. Roadmap — Next Development Phases
+
+### Phase 2: Cloud Sync & Backend
+1. **Database Swapping:** Replace Zustand's `localStorage` persist middleware with real API calls (e.g., Supabase, PostgreSQL).
+2. **Authentication:** Add login/signup flows and associate `userId` with all goals and milestones.
+3. **Wire Notifications Engine:** Connect the functional local settings toggles for "Deadline reminders" and "Weekly digests" to a real backend CRON/Email service.
+
+## 20. Coding Conventions
+- **No Prop Drilling:** State is managed globally via `useGoalStore` and accessed locally via selector hooks.
+- **Semantic Tailwind Only:** Avoid using hex codes directly in components. Map abstract tokens (`bg-surface`, `text-ink-900`) via `globals.css` and use those.
+- **Pure Functions for Business Logic:** All calculations (progress, streaks, charts) live in `src/lib/calculations.js` and are highly unit-testable.
+
+## 21. Glossary
+- **Goal:** The macro objective (e.g., "Run a Marathon"). Contains multiple milestones.
+- **Milestone:** The micro, actionable steps that make up a goal. Progress is strictly derived from the percentage of completed milestones.
+- **Growth Ring:** The concentric SVG circular progress indicator used throughout the application.
+
+## 22. Appendix: Full File Index
+Refer to Section 5 for the comprehensive project structure map.

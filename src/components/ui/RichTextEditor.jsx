@@ -75,7 +75,7 @@ export function RichTextEditor({ content, onChange, placeholder = 'Write notes..
   })
 
   return (
-    <div className="overflow-hidden rounded-md border border-border bg-surface shadow-sm focus-within:border-moss-500 focus-within:ring-1 focus-within:ring-moss-500">
+    <div className="overflow-hidden rounded-md border border-border bg-surface shadow-sm focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500">
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
     </div>

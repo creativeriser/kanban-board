@@ -14,7 +14,7 @@ import {
   LineChart,
   Line,
 } from 'recharts'
-import { TrendingUp, Target, Flame, Award } from 'lucide-react'
+import { TrendingUp, Target, Flame, Award, LineChart as LineChartIcon } from 'lucide-react'
 import { TopBar } from '../components/layout/TopBar'
 import { Card } from '../components/ui/Card'
 import { useGoalStore } from '../store/useGoalStore'
@@ -90,88 +90,102 @@ export default function Analytics() {
       <TopBar title="Analytics" subtitle="Performance insights across every goal you're growing." />
 
       <div className="px-8 py-6">
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <KpiCard icon={Target} label="Avg. completion" value={`${avgProgress}%`} accent="moss" />
-          <KpiCard icon={Award} label="Goals achieved" value={achievedCount} accent="indigo" />
-          <KpiCard icon={Flame} label="Current streak" value={`${currentStreak}d`} accent="ember" />
-          <KpiCard icon={TrendingUp} label="Longest streak" value={`${longestStreak}d`} accent="amber" />
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
-          <ChartCard title="Goal Completion Rate" subtitle="Average progress by category" delay={0}>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={completionByCategory} margin={{ left: -16 }}>
-                <CartesianGrid vertical={false} stroke="#E6E8EC" />
-                <XAxis dataKey="category" tick={{ fontSize: 11, fill: '#565B66' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#9498A3' }} axisLine={false} tickLine={false} unit="%" />
-                <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
-                <Bar dataKey="rate" fill="#1B6F5C" radius={[6, 6, 0, 0]} maxBarSize={42} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
-          <ChartCard title="Productivity Trend" subtitle="Milestones completed vs. trend line" delay={0.05}>
-            <ResponsiveContainer width="100%" height={260}>
-              <LineChart data={forecast} margin={{ left: -16 }}>
-                <CartesianGrid vertical={false} stroke="#E6E8EC" />
-                <XAxis dataKey="week" tick={{ fontSize: 11, fill: '#565B66' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#9498A3' }} axisLine={false} tickLine={false} />
-                <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
-                <Line type="monotone" dataKey="actual" stroke="#4C5FD5" strokeWidth={2.5} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="trend" stroke="#9498A3" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
-          <ChartCard title="Monthly Achievements" subtitle="Goals marked achieved per month" delay={0.1}>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={monthlyAchievements} margin={{ left: -16 }}>
-                <CartesianGrid vertical={false} stroke="#E6E8EC" />
-                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#565B66' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#9498A3' }} axisLine={false} tickLine={false} allowDecimals={false} />
-                <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
-                <Bar dataKey="achieved" fill="#FF6B4A" radius={[6, 6, 0, 0]} maxBarSize={32} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
-          <ChartCard title="Category Distribution" subtitle="Where your goals are concentrated" delay={0.15}>
-            <div className="flex items-center gap-6">
-              <ResponsiveContainer width="55%" height={220}>
-                <PieChart>
-                  <Pie data={categoryDistribution} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={3}>
-                    {categoryDistribution.map((entry) => (
-                      <Cell key={entry.name} fill={entry.color} stroke="none" />
-                    ))}
-                  </Pie>
-                  <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex flex-1 flex-col gap-2">
-                {categoryDistribution.map((c) => (
-                  <div key={c.name} className="flex items-center justify-between text-[12.5px]">
-                    <span className="flex items-center gap-2 text-ink-700">
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
-                      {c.name}
-                    </span>
-                    <span className="font-mono text-ink-600">{c.value}</span>
-                  </div>
-                ))}
-              </div>
+        {goalList.length === 0 ? (
+          <div className="flex h-[60vh] flex-col items-center justify-center text-center">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-50 text-brand-500 dark:bg-brand-500/10">
+              <LineChartIcon size={32} />
             </div>
-          </ChartCard>
-        </div>
+            <h2 className="mb-2 font-display text-xl font-semibold text-ink-900">No data to analyze yet</h2>
+            <p className="max-w-sm text-sm text-ink-600">
+              Analytics requires active goals. Start creating goals and completing milestones to unlock powerful performance insights here.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <KpiCard icon={Target} label="Avg. completion" value={`${avgProgress}%`} accent="moss" />
+              <KpiCard icon={Award} label="Goals achieved" value={achievedCount} accent="indigo" />
+              <KpiCard icon={Flame} label="Current streak" value={`${currentStreak}d`} accent="ember" />
+              <KpiCard icon={TrendingUp} label="Longest streak" value={`${longestStreak}d`} accent="amber" />
+            </div>
 
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-5">
-          <Card className="p-6">
-            <p className="mb-1 font-display text-[15px] font-semibold text-ink-900">Performance Insights</p>
-            <ul className="mt-3 flex flex-col gap-2 text-[13px] text-ink-600">
-              <li>• {completionByCategory.length > 0 ? `${completionByCategory.sort((a,b)=>b.rate-a.rate)[0]?.category} is your strongest category.` : 'Start adding goals to see insights.'}</li>
-              <li>• {weeklyMomentum[7].completed > weeklyMomentum[6].completed ? 'Your weekly momentum is trending upward — milestone completions are up.' : 'Weekly momentum is steady or dipping. Try to complete a small milestone today.'}</li>
-              <li>• {currentStreak > 3 ? `You are on a ${currentStreak}-day streak! Keep up the incredible consistency.` : 'Consistency builds momentum. Try to build a 3-day streak this week.'}</li>
-            </ul>
-          </Card>
-        </motion.div>
+            <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <ChartCard title="Goal Completion Rate" subtitle="Average progress by category" delay={0}>
+                <ResponsiveContainer width="100%" height={260}>
+                  <BarChart data={completionByCategory} margin={{ left: -16 }}>
+                    <CartesianGrid vertical={false} stroke="#E6E8EC" />
+                    <XAxis dataKey="category" tick={{ fontSize: 11, fill: '#565B66' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: '#9498A3' }} axisLine={false} tickLine={false} unit="%" />
+                    <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
+                    <Bar dataKey="rate" fill="#1B6F5C" radius={[6, 6, 0, 0]} maxBarSize={42} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartCard>
+
+              <ChartCard title="Productivity Trend" subtitle="Milestones completed vs. trend line" delay={0.05}>
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={forecast} margin={{ left: -16 }}>
+                    <CartesianGrid vertical={false} stroke="#E6E8EC" />
+                    <XAxis dataKey="week" tick={{ fontSize: 11, fill: '#565B66' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: '#9498A3' }} axisLine={false} tickLine={false} />
+                    <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
+                    <Line type="monotone" dataKey="actual" stroke="#4C5FD5" strokeWidth={2.5} dot={{ r: 3 }} />
+                    <Line type="monotone" dataKey="trend" stroke="#9498A3" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartCard>
+
+              <ChartCard title="Monthly Achievements" subtitle="Goals marked achieved per month" delay={0.1}>
+                <ResponsiveContainer width="100%" height={260}>
+                  <BarChart data={monthlyAchievements} margin={{ left: -16 }}>
+                    <CartesianGrid vertical={false} stroke="#E6E8EC" />
+                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#565B66' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: '#9498A3' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
+                    <Bar dataKey="achieved" fill="#FF6B4A" radius={[6, 6, 0, 0]} maxBarSize={32} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartCard>
+
+              <ChartCard title="Category Distribution" subtitle="Where your goals are concentrated" delay={0.15}>
+                <div className="flex items-center gap-6">
+                  <ResponsiveContainer width="55%" height={220}>
+                    <PieChart>
+                      <Pie data={categoryDistribution} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={3}>
+                        {categoryDistribution.map((entry) => (
+                          <Cell key={entry.name} fill={entry.color} stroke="none" />
+                        ))}
+                      </Pie>
+                      <RTooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E6E8EC' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="flex flex-1 flex-col gap-2">
+                    {categoryDistribution.map((c) => (
+                      <div key={c.name} className="flex items-center justify-between text-[12.5px]">
+                        <span className="flex items-center gap-2 text-ink-700">
+                          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
+                          {c.name}
+                        </span>
+                        <span className="font-mono text-ink-600">{c.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </ChartCard>
+            </div>
+
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-5">
+              <Card className="p-6">
+                <p className="mb-1 font-display text-[15px] font-semibold text-ink-900">Performance Insights</p>
+                <ul className="mt-3 flex flex-col gap-2 text-[13px] text-ink-600">
+                  <li>• {completionByCategory.length > 0 ? `${completionByCategory.sort((a,b)=>b.rate-a.rate)[0]?.category} is your strongest category.` : 'Start adding goals to see insights.'}</li>
+                  <li>• {weeklyMomentum[7]?.completed > weeklyMomentum[6]?.completed ? 'Your weekly momentum is trending upward — milestone completions are up.' : 'Weekly momentum is steady or dipping. Try to complete a small milestone today.'}</li>
+                  <li>• {currentStreak > 3 ? `You are on a ${currentStreak}-day streak! Keep up the incredible consistency.` : 'Consistency builds momentum. Try to build a 3-day streak this week.'}</li>
+                </ul>
+              </Card>
+            </motion.div>
+          </>
+        )}
       </div>
     </div>
   )

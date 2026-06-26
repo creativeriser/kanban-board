@@ -11,10 +11,22 @@ export function AppShell({ children }) {
   const newGoalModalOpen = useGoalStore((s) => s.ui.newGoalModalOpen)
   const setNewGoalModalOpen = useGoalStore((s) => s.setNewGoalModalOpen)
   const theme = useGoalStore((s) => s.preferences?.appearance?.theme || 'light')
+  const accentHex = useGoalStore((s) => s.preferences?.appearance?.accent || '#1B6F5C')
 
   useEffect(() => {
     const root = document.documentElement
     
+    // Apply Accent
+    const HEX_TO_ACCENT = {
+      '#1B6F5C': 'moss',
+      '#4C5FD5': 'indigo',
+      '#FF6B4A': 'ember',
+      '#E8A23D': 'amber',
+    }
+    const accentName = HEX_TO_ACCENT[accentHex] || 'moss'
+    root.setAttribute('data-accent', accentName)
+    
+    // Apply Theme
     function applyTheme() {
       if (theme === 'dark') {
         root.classList.add('dark')
@@ -36,7 +48,20 @@ export function AppShell({ children }) {
       mediaQuery.addEventListener('change', listener)
       return () => mediaQuery.removeEventListener('change', listener)
     }
-  }, [theme])
+  }, [theme, accentHex])
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return
+      
+      if (e.key.toLowerCase() === 'c' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault()
+        setNewGoalModalOpen(true)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [setNewGoalModalOpen])
 
   return (
     <div className="flex min-h-screen bg-canvas">

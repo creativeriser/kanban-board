@@ -91,11 +91,6 @@ export const useGoalStore = create(
         time: new Date().toISOString()
       }
 
-      // Fire confetti outside state setter loop if applicable
-      if (toStatus === 'achieved' && fromStatus !== 'achieved' && s.preferences?.notifications?.celebrations) {
-        setTimeout(triggerConfetti, 50)
-      }
-
       return {
         order,
         goals: {
@@ -166,6 +161,21 @@ export const useGoalStore = create(
       },
     })),
 
+  reorderMilestones: (goalId, oldIndex, newIndex) =>
+    set((s) => {
+      const goal = s.goals[goalId]
+      if (!goal) return s
+      const list = [...goal.milestoneIds]
+      const [moved] = list.splice(oldIndex, 1)
+      list.splice(newIndex, 0, moved)
+      return {
+        goals: {
+          ...s.goals,
+          [goalId]: { ...goal, milestoneIds: list },
+        },
+      }
+    }),
+
   deleteMilestone: (goalId, milestoneId) =>
     set((s) => {
       const newMilestones = { ...s.milestones }
@@ -187,6 +197,65 @@ export const useGoalStore = create(
       const goal = s.goals[goalId]
       if (!goal) return s
 
+      // Remove from current column
+      const newOrder = { ...s.order }
+      newOrder[goal.status] = (s.order[goal.status] || []).filter((id) => id !== goalId)
+      
+      // Move to trash
+      newOrder.trash = [goalId, ...(newOrder.trash || [])]
+
+      const newActivity = {
+        id: uid('a'),
+        goalId: goalId,
+        text: `Moved goal to trash: "${goal.title}"`,
+        type: 'amber',
+        time: new Date().toISOString()
+      }
+
+      return { 
+        goals: {
+          ...s.goals,
+          [goalId]: { ...goal, status: 'trash', originalStatus: goal.status }
+        },
+        order: newOrder,
+        activity: [newActivity, ...s.activity].slice(0, 20)
+      }
+    }),
+
+  restoreGoal: (goalId) =>
+    set((s) => {
+      const goal = s.goals[goalId]
+      if (!goal || goal.status !== 'trash') return s
+
+      const restoreStatus = goal.originalStatus || 'planning'
+
+      const newOrder = { ...s.order }
+      newOrder.trash = (s.order.trash || []).filter((id) => id !== goalId)
+      newOrder[restoreStatus] = [goalId, ...(newOrder[restoreStatus] || [])]
+
+      const newActivity = {
+        id: uid('a'),
+        goalId: goalId,
+        text: `Restored goal: "${goal.title}"`,
+        type: 'status',
+        time: new Date().toISOString()
+      }
+
+      return {
+        goals: {
+          ...s.goals,
+          [goalId]: { ...goal, status: restoreStatus }
+        },
+        order: newOrder,
+        activity: [newActivity, ...s.activity].slice(0, 20)
+      }
+    }),
+
+  permanentlyDeleteGoal: (goalId) =>
+    set((s) => {
+      const goal = s.goals[goalId]
+      if (!goal) return s
+
       // Clean up orphaned milestones
       const newMilestones = { ...s.milestones }
       goal.milestoneIds.forEach((id) => delete newMilestones[id])
@@ -201,17 +270,56 @@ export const useGoalStore = create(
         [goal.status]: (s.order[goal.status] || []).filter((id) => id !== goalId),
       }
 
-      const newActivity = {
-        id: uid('a'),
-        goalId: goalId,
-        text: `Deleted goal: "${goal.title}"`,
-        type: 'amber',
-        time: new Date().toISOString()
-      }
-
       return { 
         goals: newGoals, 
         milestones: newMilestones, 
+        order: newOrder
+      }
+    }),
+
+  emptyTrash: () =>
+    set((s) => {
+      const trashIds = s.order.trash || []
+      const newGoals = { ...s.goals }
+      const newMilestones = { ...s.milestones }
+      
+      trashIds.forEach(goalId => {
+         const goal = newGoals[goalId]
+         if (goal) {
+            goal.milestoneIds.forEach((id) => delete newMilestones[id])
+            delete newGoals[goalId]
+         }
+      })
+
+      return {
+         goals: newGoals,
+         milestones: newMilestones,
+         order: { ...s.order, trash: [] }
+      }
+    }),
+
+  restoreGoalSnapshot: (snapshot) =>
+    set((s) => {
+      const { goal, milestones, status, index } = snapshot
+      const newGoals = { ...s.goals, [goal.id]: goal }
+      const newMilestones = { ...s.milestones, ...milestones }
+      
+      const newOrder = { ...s.order }
+      const targetList = [...(newOrder[status] || [])]
+      targetList.splice(index >= 0 ? index : targetList.length, 0, goal.id)
+      newOrder[status] = targetList
+
+      const newActivity = {
+        id: uid('a'),
+        goalId: goal.id,
+        text: `Restored goal: "${goal.title}"`,
+        type: 'status',
+        time: new Date().toISOString()
+      }
+
+      return {
+        goals: newGoals,
+        milestones: newMilestones,
         order: newOrder,
         activity: [newActivity, ...s.activity].slice(0, 20)
       }

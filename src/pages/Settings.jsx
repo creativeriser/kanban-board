@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { User, Bell, Palette, Shield, Check } from 'lucide-react'
+import { User, Bell, Palette, Shield, Check, LogOut } from 'lucide-react'
 import { toast } from 'sonner'
 import { TopBar } from '../components/layout/TopBar'
 import { Card } from '../components/ui/Card'
@@ -62,21 +62,31 @@ export default function Settings() {
 
       <div className="mx-auto max-w-5xl px-8 py-10">
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[220px_1fr]">
-          <nav className="flex flex-col gap-1.5 overflow-x-auto lg:overflow-visible">
-            {SECTIONS.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => handleNav(s.id)}
-                className={cn(
-                  'flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-[13.5px] transition-colors',
-                  active === s.id ? 'bg-ink-900/5 text-ink-900 font-semibold' : 'text-ink-600 font-medium hover:bg-ink-900/5 hover:text-ink-900'
-                )}
-              >
-                <s.icon size={16} className={active === s.id ? 'text-ink-900' : 'text-ink-500'} />
-                {s.label}
-              </button>
-            ))}
-          </nav>
+          <div className="flex flex-col gap-6">
+            <nav className="flex flex-col gap-1.5 overflow-x-auto lg:overflow-visible">
+              {SECTIONS.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => handleNav(s.id)}
+                  className={cn(
+                    'flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-[13.5px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+                    active === s.id ? 'bg-ink-900/5 text-ink-900 font-semibold' : 'text-ink-600 font-medium hover:bg-ink-900/5 hover:text-ink-900 dark:hover:bg-white/5'
+                  )}
+                >
+                  <s.icon size={16} className={active === s.id ? 'text-ink-900' : 'text-ink-500'} />
+                  {s.label}
+                </button>
+              ))}
+            </nav>
+            <div className="hidden lg:block h-px w-full bg-border" />
+            <button
+              onClick={() => toast.success('Signed out (Simulated)')}
+              className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-[13.5px] font-medium text-ember-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ember-500 hover:bg-ember-50 hover:text-ember-700 dark:text-ember-500 dark:hover:bg-ember-500/10 dark:hover:text-ember-400"
+            >
+              <LogOut size={16} />
+              Sign out
+            </button>
+          </div>
 
           <motion.div key={active} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
             <Card className="overflow-hidden p-0 shadow-sm border border-border">
@@ -131,7 +141,7 @@ export default function Settings() {
                     </motion.div>
                   )}
                   {saved && !isEditing && (
-                    <div className="bg-moss-50 border-t border-moss-100 px-8 py-3 flex items-center gap-2 text-moss-700 text-[13px] font-medium">
+                    <div className="bg-brand-100/50 border-t border-brand-100 px-8 py-3 flex items-center gap-2 text-brand-700 text-[13px] font-medium">
                       <Check size={16} /> Profile saved successfully.
                     </div>
                   )}
@@ -144,20 +154,20 @@ export default function Settings() {
                     <Toggle 
                       label="Deadline reminders" 
                       description="Get notified 3 days before a goal is due" 
-                      checked={preferences?.notifications?.deadline ?? true} 
-                      onChange={(v) => updatePreferences('notifications', { deadline: v })}
+                      checked={preferences?.notifications?.deadlineReminders ?? true} 
+                      onChange={(v) => updatePreferences('notifications', { deadlineReminders: v })}
                     />
                     <Toggle 
                       label="Weekly digest" 
                       description="A Monday-morning summary of last week's momentum" 
-                      checked={preferences?.notifications?.weekly ?? true} 
-                      onChange={(v) => updatePreferences('notifications', { weekly: v })}
+                      checked={preferences?.notifications?.weeklyDigest ?? true} 
+                      onChange={(v) => updatePreferences('notifications', { weeklyDigest: v })}
                     />
                     <Toggle 
                       label="Streak alerts" 
                       description="Nudge me before my streak resets" 
-                      checked={preferences?.notifications?.streak ?? true} 
-                      onChange={(v) => updatePreferences('notifications', { streak: v })}
+                      checked={preferences?.notifications?.streakAlerts ?? true} 
+                      onChange={(v) => updatePreferences('notifications', { streakAlerts: v })}
                     />
                     <Toggle 
                       label="Achievement celebrations" 
@@ -211,13 +221,13 @@ export default function Settings() {
                     <Toggle 
                       label="Public achievement profile" 
                       description="Let others see your achieved goals" 
-                      checked={preferences?.privacy?.publicProfile || false}
+                      checked={preferences?.privacy?.publicProfile ?? false}
                       onChange={(v) => updatePreferences('privacy', { publicProfile: v })}
                     />
                     <Toggle 
                       label="Share analytics with coach" 
                       description="Allow a connected accountability partner to view trends" 
-                      checked={preferences?.privacy?.shareAnalytics || false}
+                      checked={preferences?.privacy?.shareAnalytics ?? false}
                       onChange={(v) => updatePreferences('privacy', { shareAnalytics: v })}
                       border={false} 
                     />
@@ -228,10 +238,10 @@ export default function Settings() {
               {active === 'advanced' && (
                 <div className="flex flex-col h-full">
                   <div className="flex flex-col px-8 py-6">
-                    <div className="border border-red-200 bg-red-50/50 rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="border border-ember-400/30 bg-ember-100/30 dark:border-ember-500/20 dark:bg-ember-500/10 rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
-                        <p className="text-[14px] font-semibold text-red-900">Developer Zone: Factory Reset</p>
-                        <p className="mt-1 text-[13px] text-red-700/80 max-w-md">Wipe your local storage and reset all goals, streaks, and settings back to the initial dummy data. This cannot be undone.</p>
+                        <p className="text-[14px] font-semibold text-ember-600 dark:text-ember-400">Developer Zone: Factory Reset</p>
+                        <p className="mt-1 text-[13px] text-ember-600/80 dark:text-ember-400/80 max-w-md">Wipe your local storage and reset all goals, streaks, and settings back to the initial dummy data. This cannot be undone.</p>
                       </div>
                       <Button 
                         variant="outline" 
@@ -241,7 +251,7 @@ export default function Settings() {
                             toast.error('Data reset to factory defaults')
                           }
                         }}
-                        className="shrink-0 border-red-200 text-red-700 hover:bg-red-50"
+                        className="shrink-0 border-ember-400/30 text-ember-600 hover:bg-ember-100 dark:border-ember-500/30 dark:text-ember-400 dark:hover:bg-ember-500/20"
                       >
                         Reset All Data
                       </Button>
@@ -275,20 +285,25 @@ function SettingsRow({ label, description, value, isEditing = true, children, bo
   )
 }
 
-function Toggle({ label, description, checked, onChange, border = true }) {
+function Toggle({ label, description, checked, onChange, border = true, disabled = false, badge = null }) {
   return (
-    <div className={cn("flex items-center justify-between py-6", border && "border-b border-border")}>
+    <div className={cn("flex items-center justify-between py-6", border && "border-b border-border", disabled && "opacity-60 grayscale")}>
       <div className="pr-8 max-w-[400px]">
-        <p className="text-[13.5px] font-semibold text-ink-900">{label}</p>
+        <div className="flex items-center gap-3">
+          <p className="text-[13.5px] font-semibold text-ink-900">{label}</p>
+          {badge && <span className="rounded-full bg-ink-900/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-ink-600">{badge}</span>}
+        </div>
         <p className="mt-1 text-[13px] text-ink-600 leading-relaxed">{description}</p>
       </div>
       <button
         type="button"
-        onClick={() => onChange(!checked)}
+        disabled={disabled}
+        onClick={() => !disabled && onChange(!checked)}
         aria-pressed={checked}
         className={cn(
-          'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-moss-500 focus-visible:ring-offset-2',
-          checked ? 'bg-moss-600' : 'bg-ink-200'
+          'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
+          checked ? 'bg-brand-600' : 'bg-ink-200',
+          disabled && 'cursor-not-allowed'
         )}
       >
         <span
@@ -309,7 +324,7 @@ function SaveBar({ saved, className }) {
         <motion.span
           initial={{ opacity: 0, x: 4 }}
           animate={{ opacity: 1, x: 0 }}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-moss-600"
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-brand-600"
         >
           <Check size={15} /> Saved successfully
         </motion.span>

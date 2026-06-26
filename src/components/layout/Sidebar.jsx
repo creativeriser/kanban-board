@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Kanban, BarChart3, Trophy, Settings, Sprout, ChevronsLeft } from 'lucide-react'
+import { LayoutDashboard, Kanban, BarChart3, Trophy, Settings, Sprout, ChevronsLeft, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '../../lib/utils'
@@ -11,6 +11,7 @@ const NAV = [
   { to: '/board', label: 'Goals Board', icon: Kanban },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/achievements', label: 'Achievements', icon: Trophy },
+  { to: '/trash', label: 'Trash Bin', icon: Trash2 },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -24,10 +25,10 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-50 flex h-screen flex-col bg-surface border-r border-border transition-all duration-300 ease-in-out lg:sticky lg:top-0',
+        'fixed inset-y-0 left-0 z-50 flex h-screen flex-col bg-surface/70 backdrop-blur-xl dark:bg-surface/95 border-r border-border/60 transition-all duration-300 ease-in-out lg:sticky lg:top-0',
         mobileSidebarOpen ? 'w-[250px] translate-x-0' : '-translate-x-full lg:translate-x-0',
         collapsed && !mobileSidebarOpen ? 'lg:w-[72px]' : 'lg:w-[250px]',
-        mobileSidebarOpen && 'shadow-2xl'
+        mobileSidebarOpen && 'shadow-2xl dark:shadow-dark-floating'
       )}
     >
       <div className="flex h-[72px] items-center gap-3 px-5 border-b border-border">
@@ -37,7 +38,28 @@ export function Sidebar() {
         {!collapsed && <span className="font-display text-[17px] font-semibold tracking-wide text-ink-900">GoalFlow</span>}
       </div>
 
-      <nav className="mt-6 flex flex-1 flex-col gap-1.5 px-3 relative">
+      <div className="px-3 pt-5">
+        <button
+          onClick={() => {
+            document.dispatchEvent(new CustomEvent('open-command-menu'))
+            if (mobileSidebarOpen) setMobileSidebarOpen(false)
+          }}
+          className={cn(
+            "flex w-full items-center gap-2 rounded-md border border-border bg-surface px-2.5 py-1.5 text-left text-[13px] text-ink-500 shadow-sm transition-colors hover:border-ink-300 hover:text-ink-900 dark:bg-ink-900/20 dark:hover:border-ink-700 outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
+            collapsed && "justify-center px-0"
+          )}
+        >
+          <Search size={16} className={cn("shrink-0", collapsed && "mx-auto")} />
+          {!collapsed && (
+            <>
+              <span className="flex-1">Search...</span>
+              <kbd className="hidden sm:inline-flex h-5 items-center justify-center rounded border border-border bg-ink-900/5 px-1.5 font-mono text-[10px] font-medium text-ink-500 dark:bg-white/10 dark:text-ink-400">⌘K</kbd>
+            </>
+          )}
+        </button>
+      </div>
+
+      <nav className="mt-4 flex flex-1 flex-col gap-1.5 px-3 relative">
         {NAV.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
@@ -57,7 +79,7 @@ export function Sidebar() {
                 {isActive && (
                   <motion.div
                     layoutId="sidebar-active-bg"
-                    className="absolute inset-0 rounded-lg bg-ink-900/5 border border-ink-900/10"
+                    className="absolute inset-0 rounded-lg bg-ink-900/5 dark:bg-ink-900/10 border border-ink-900/10 dark:border-ink-900/5"
                     transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
                   />
                 )}
@@ -66,7 +88,7 @@ export function Sidebar() {
                 {isActive && (
                   <motion.div
                     layoutId="sidebar-active-pill"
-                    className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-moss-500"
+                    className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-brand-500"
                     transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
                   />
                 )}
@@ -85,9 +107,9 @@ export function Sidebar() {
 
       <div className="px-4 pb-5">
         {!collapsed && (
-          <div className="mb-4 relative overflow-hidden rounded-xl border border-border bg-gradient-to-b from-ink-900/[0.02] to-transparent p-4 shadow-sm">
+          <div className="mb-4 relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-b from-ink-900/[0.02] to-transparent dark:from-white/[0.03] p-4 shadow-sm dark:shadow-dark-card backdrop-blur-sm">
             {/* Ambient glow */}
-            <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-ember-500/10 blur-[24px]"></div>
+            <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-ember-500/10 dark:bg-ember-500/20 blur-[24px]"></div>
             
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">

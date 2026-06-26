@@ -7,6 +7,7 @@ const TONES = {
   indigo: { track: '#E8EAFB', fill: '#4C5FD5' },
   amber: { track: '#FBEDD7', fill: '#E8A23D' },
   ink: { track: '#E6E8EC', fill: '#14161A' },
+  brand: { track: 'rgb(var(--color-brand-100))', fill: 'rgb(var(--color-brand-500))' },
 }
 
 /**
@@ -18,14 +19,14 @@ export function GrowthRing({
   progress = 0,
   size = 56,
   strokeWidth = 5,
-  tone = 'moss',
+  tone = 'brand',
   milestoneCount,
   doneCount,
   showLabel = true,
   className,
   labelClassName,
 }) {
-  const colors = TONES[tone] || TONES.moss
+  const colors = TONES[tone] || TONES.brand
   const center = size / 2
 
   // Concentric mode: one ring per milestone (max 5 rings shown for clarity)

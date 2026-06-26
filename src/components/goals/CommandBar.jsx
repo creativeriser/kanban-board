@@ -30,7 +30,7 @@ export function CommandBar({ onNewGoal }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search goals..."
-            className="h-9 w-full rounded border border-border bg-surface pl-9 pr-3 text-sm placeholder:text-ink-400 focus:border-moss-500 focus:outline-none"
+            className="h-9 w-full rounded border border-border bg-surface pl-9 pr-3 text-sm placeholder:text-ink-400 focus:border-brand-500 focus:outline-none"
           />
         </div>
 
@@ -73,7 +73,7 @@ export function CommandBar({ onNewGoal }) {
               'rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors',
               categoryFilter === c.id
                 ? 'border-transparent bg-ink-900 text-canvas'
-                : 'border-border bg-surface text-ink-600 hover:bg-canvas'
+                : 'border-border bg-surface text-ink-600 hover:bg-ink-900/5 dark:hover:bg-white/5'
             )}
           >
             {c.label}

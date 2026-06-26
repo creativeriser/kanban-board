@@ -11,10 +11,13 @@ import { TopBar } from '../components/layout/TopBar'
 import { KanbanColumn } from '../components/goals/KanbanColumn'
 import { CommandBar } from '../components/goals/CommandBar'
 import { GoalDragOverlay } from '../components/goals/GoalDragOverlay'
+import { TrashDropZone } from '../components/goals/TrashDropZone'
+import { toast } from 'sonner'
 
 import { useGoalStore } from '../store/useGoalStore'
 import { STATUSES } from '../lib/mockData'
 import { goalProgress, sortGoalIds } from '../lib/calculations'
+import { triggerConfetti } from '../lib/utils'
 
 export default function GoalsBoard() {
   const goals = useGoalStore((s) => s.goals)
@@ -23,10 +26,14 @@ export default function GoalsBoard() {
   const ui = useGoalStore((s) => s.ui)
   const moveGoal = useGoalStore((s) => s.moveGoal)
   const reorderWithinColumn = useGoalStore((s) => s.reorderWithinColumn)
+  const deleteGoal = useGoalStore((s) => s.deleteGoal)
+  const restoreGoal = useGoalStore((s) => s.restoreGoal)
 
   const setNewGoalModalOpen = useGoalStore((s) => s.setNewGoalModalOpen)
+  const preferences = useGoalStore((s) => s.preferences)
 
   const [activeId, setActiveId] = useState(null)
+  const [originalStatus, setOriginalStatus] = useState(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -56,6 +63,7 @@ export default function GoalsBoard() {
 
   function handleDragStart(event) {
     setActiveId(event.active.id)
+    setOriginalStatus(goals[event.active.id]?.status)
   }
 
   function handleDragOver(event) {
@@ -75,7 +83,29 @@ export default function GoalsBoard() {
   function handleDragEnd(event) {
     const { active, over } = event
     setActiveId(null)
+    
+    const finalStatus = goals[active.id]?.status
+    if (finalStatus === 'achieved' && originalStatus !== 'achieved' && preferences?.notifications?.celebrations) {
+      triggerConfetti()
+    }
+    setOriginalStatus(null)
+
     if (!over) return
+
+    if (over.id === 'trash-zone') {
+      const goal = goals[active.id]
+      if (!goal) return
+      
+      deleteGoal(goal.id)
+      toast.success('Goal moved to trash', {
+        description: `"${goal.title}" can be restored from the Trash Bin.`,
+        action: {
+          label: 'Undo',
+          onClick: () => restoreGoal(goal.id),
+        },
+      })
+      return
+    }
 
     const status = goals[active.id]?.status
     if (!status) return
@@ -114,6 +144,8 @@ export default function GoalsBoard() {
               return <KanbanColumn key={s.id} status={s.id} label={s.label} goalIds={ids} avgProgress={avg} />
             })}
           </div>
+
+          <TrashDropZone isDragging={!!activeId} />
 
           <DragOverlay>
             {activeGoal ? <GoalDragOverlay goal={activeGoal} milestonesById={milestonesById} /> : null}

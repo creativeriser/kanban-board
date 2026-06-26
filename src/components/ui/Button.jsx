@@ -3,8 +3,8 @@ import { cn } from '../../lib/utils'
 
 const VARIANTS = {
   primary: 'bg-ink-900 text-canvas hover:bg-ink-800 shadow-xs',
-  brand: 'bg-moss-600 text-canvas hover:bg-moss-700 shadow-xs',
-  secondary: 'bg-surface text-ink-900 border border-border hover:bg-canvas shadow-xs',
+  brand: 'bg-brand-600 text-canvas hover:bg-brand-700 shadow-xs',
+  secondary: 'bg-surface text-ink-900 border border-border hover:bg-ink-900/5 dark:hover:bg-white/5 shadow-xs',
   ghost: 'bg-transparent text-ink-600 hover:bg-ink-900/5 hover:text-ink-900',
   danger: 'bg-surface text-ember-600 border border-ember-200 hover:bg-ember-100/50',
 }

@@ -7,13 +7,17 @@ const PRIORITY_CONFIG = {
   low: { color: 'bg-moss-500', label: 'Low' },
 }
 
-export function PriorityDot({ priority, showLabel = false, className }) {
+export function PriorityDot({ priority, showLabel = false, className, onClick }) {
   const cfg = PRIORITY_CONFIG[priority]
+  const Comp = onClick ? 'button' : 'span'
   return (
-    <span className={cn('inline-flex items-center gap-1.5', className)}>
+    <Comp 
+      onClick={onClick}
+      className={cn('inline-flex items-center gap-1.5', onClick && 'cursor-pointer hover:bg-ink-900/5 rounded px-1.5 py-0.5 -ml-1.5 transition-colors', className)}
+    >
       <span className={cn('h-2 w-2 rounded-full', cfg.color)} />
       {showLabel && <span className="text-[12px] font-medium text-ink-600">{cfg.label}</span>}
-    </span>
+    </Comp>
   )
 }
 

@@ -10,7 +10,8 @@ import { Button } from '../components/ui/Button'
 
 import { PriorityDot, CategoryTag } from '../components/goals/PriorityDot'
 import { useGoalStore } from '../store/useGoalStore'
-import { goalProgress, dueMeta, isUpcoming, calculateStreaks, calculateWeeklyMomentum } from '../lib/calculations'
+import { goalProgress, dueMeta, isUpcoming, calculateStreaks, calculateWeeklyMomentum, completionRateByMonth } from '../lib/calculations'
+import { formatDistanceToNow } from 'date-fns'
 import { cn } from '../lib/utils'
 
 export default function Dashboard() {
@@ -18,6 +19,7 @@ export default function Dashboard() {
   const goals = useGoalStore((s) => s.goals)
   const milestonesById = useGoalStore((s) => s.milestones)
   const activity = useGoalStore((s) => s.activity)
+  const user = useGoalStore((s) => s.user)
   const navigate = useNavigate()
 
   const goalList = Object.values(goals)
@@ -40,7 +42,15 @@ export default function Dashboard() {
     .filter((g) => g.priority === 'high')
     .sort((a, b) => goalProgress(b, milestonesById) - goalProgress(a, milestonesById))
 
-  const monthlyProgress = 64 // mock aggregate for "this month"
+  const monthlyProgress = useMemo(() => completionRateByMonth(goals, milestonesById), [goals, milestonesById])
+
+  const momentumChange = useMemo(() => {
+    if (weeklyMomentum.length < 2) return 0
+    const current = weeklyMomentum[weeklyMomentum.length - 1].completed
+    const prev = weeklyMomentum[weeklyMomentum.length - 2].completed
+    if (prev === 0) return current > 0 ? 100 : 0
+    return Math.round(((current - prev) / prev) * 100)
+  }, [weeklyMomentum])
 
   if (goalList.length === 0) {
     return (
@@ -56,8 +66,8 @@ export default function Dashboard() {
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="w-full max-w-lg"
           >
-            <Card className="flex flex-col items-center p-12 text-center shadow-floating">
-              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-moss-100 text-moss-600">
+            <Card className="flex flex-col items-center p-12 text-center shadow-floating dark:shadow-dark-floating">
+              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-100 text-brand-600 dark:bg-brand-500/20 dark:text-brand-400">
                 <Rocket size={40} strokeWidth={1.5} />
               </div>
               <h2 className="mb-3 font-display text-[28px] font-semibold text-ink-900">Your board is empty</h2>
@@ -78,7 +88,7 @@ export default function Dashboard() {
   return (
     <div>
       <TopBar
-        title="Good to see you back"
+        title={user?.name ? `Good to see you back, ${user.name.split(' ')[0]}` : "Good to see you back"}
         subtitle="Here's how your goals are growing this week."
         action={
           <button
@@ -101,7 +111,7 @@ export default function Dashboard() {
           <Card className="relative overflow-hidden p-7">
             <div className="relative z-10 flex items-start justify-between gap-6">
               <div>
-                <p className="text-[12px] font-semibold uppercase tracking-wide text-moss-600">This month</p>
+                <p className="text-[12px] font-semibold uppercase tracking-wide text-brand-600">This month</p>
                 <h2 className="mt-1.5 font-display text-[28px] font-semibold leading-tight text-ink-900">
                   You're {monthlyProgress}% toward your monthly goals
                 </h2>
@@ -122,11 +132,12 @@ export default function Dashboard() {
           <Card className="flex flex-col p-6">
             <div className="mb-1 flex items-center justify-between">
               <p className="font-display text-[15px] font-semibold text-ink-900">Weekly Momentum</p>
-              <span className="inline-flex items-center gap-1 text-[12px] font-medium text-moss-600">
-                <TrendingUp size={13} /> +18%
+              <span className="inline-flex items-center gap-1 text-[12px] font-medium text-brand-600">
+                <TrendingUp size={13} className={cn("transition-transform", momentumChange < 0 && "rotate-180")} /> 
+                {momentumChange > 0 ? '+' : ''}{momentumChange}%
               </span>
             </div>
-            <p className="mb-2 text-[12px] text-ink-600">Milestones completed, last 8 weeks</p>
+            <p className="mb-2 text-[12px] text-ink-600">Milestones completed, last {weeklyMomentum.length} weeks</p>
             <div className="-ml-2 h-[120px] flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={weeklyMomentum} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
@@ -159,7 +170,7 @@ export default function Dashboard() {
                   <Link
                     key={g.id}
                     to={`/goals/${g.id}`}
-                    className="flex items-center justify-between gap-3 rounded px-2 py-2 transition-colors hover:bg-canvas"
+                    className="flex items-center justify-between gap-3 rounded px-2 py-2 transition-colors hover:bg-ink-900/5 dark:hover:bg-white/5"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-[13px] font-medium text-ink-900">{g.title}</p>
@@ -186,7 +197,7 @@ export default function Dashboard() {
               {highPriority.slice(0, 4).map((g) => {
                 const progress = goalProgress(g, milestonesById)
                 return (
-                  <Link key={g.id} to={`/goals/${g.id}`} className="block rounded px-2 py-1.5 transition-colors hover:bg-canvas">
+                  <Link key={g.id} to={`/goals/${g.id}`} className="block rounded px-2 py-1.5 transition-colors hover:bg-ink-900/5 dark:hover:bg-white/5">
                     <div className="mb-1 flex items-center justify-between">
                       <span className="flex items-center gap-1.5 truncate text-[13px] font-medium text-ink-900">
                         <PriorityDot priority={g.priority} />
@@ -215,6 +226,7 @@ export default function Dashboard() {
                   />
                   <div className="min-w-0">
                     <p className="text-[12.5px] leading-snug text-ink-700">{a.text}</p>
+                    <p className="font-mono text-[11px] text-ink-400 mt-0.5">{formatDistanceToNow(new Date(a.time), { addSuffix: true })}</p>
                   </div>
                 </div>
               ))}

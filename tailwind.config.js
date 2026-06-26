@@ -16,6 +16,13 @@ export default {
           400: 'rgb(var(--color-ink-400) / <alpha-value>)',
           200: 'rgb(var(--color-ink-200) / <alpha-value>)',
         },
+        brand: {
+          100: 'rgb(var(--color-brand-100) / <alpha-value>)',
+          300: 'rgb(var(--color-brand-300) / <alpha-value>)',
+          500: 'rgb(var(--color-brand-500) / <alpha-value>)',
+          600: 'rgb(var(--color-brand-600) / <alpha-value>)',
+          700: 'rgb(var(--color-brand-700) / <alpha-value>)',
+        },
         moss: {
           100: 'rgb(var(--color-moss-100) / <alpha-value>)',
           300: 'rgb(var(--color-moss-300) / <alpha-value>)',
@@ -58,6 +65,9 @@ export default {
         card: '0 1px 2px rgba(20,22,26,0.04), 0 1px 1px rgba(20,22,26,0.03)',
         raised: '0 8px 24px rgba(20,22,26,0.08), 0 2px 6px rgba(20,22,26,0.04)',
         floating: '0 16px 40px rgba(20,22,26,0.16), 0 4px 12px rgba(20,22,26,0.08)',
+        'dark-card': '0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+        'dark-raised': '0 8px 24px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)',
+        'dark-floating': '0 16px 40px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
       },
       spacing: {
         18: '4.5rem',

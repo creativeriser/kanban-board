@@ -10,10 +10,10 @@ export function uid(prefix = 'id') {
   return `${prefix}_${Math.random().toString(36).slice(2, 9)}`
 }
 
-export function triggerConfetti() {
+export function triggerConfetti(brandColor = '#1B6F5C') {
   const duration = 2000
   const end = Date.now() + duration
-  const colors = ['#1B6F5C', '#2E8A6C', '#FF6B4A', '#E8A23D']
+  const colors = [brandColor, '#FFFFFF', brandColor, '#E8A23D']
 
   ;(function frame() {
     confetti({

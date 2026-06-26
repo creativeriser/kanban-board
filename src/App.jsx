@@ -7,6 +7,7 @@ import GoalsBoard from './pages/GoalsBoard'
 import GoalDetails from './pages/GoalDetails'
 import Analytics from './pages/Analytics'
 import Achievements from './pages/Achievements'
+import Trash from './pages/Trash'
 import Settings from './pages/Settings'
 
 function AnimatedRoutes() {
@@ -17,6 +18,7 @@ function AnimatedRoutes() {
       <Route path="/goals/:goalId" element={<GoalDetails />} />
       <Route path="/analytics" element={<Analytics />} />
       <Route path="/achievements" element={<Achievements />} />
+      <Route path="/trash" element={<Trash />} />
       <Route path="/settings" element={<Settings />} />
     </Routes>
   )
