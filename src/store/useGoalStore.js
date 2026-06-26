@@ -57,7 +57,7 @@ export const useGoalStore = create(
     sortBy: 'priority', // 'priority' | 'dueDate' | 'alphabetical'
     mobileSidebarOpen: false,
     newGoalModalOpen: false,
-    sidebarWidth: 220, // Compact, perfectly aligned default width
+    sidebarWidth: 200, // Absolute slimmest default width
   },
 
   setSearch: (search) => set((s) => ({ ui: { ...s.ui, search } })),

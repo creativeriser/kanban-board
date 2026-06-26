@@ -55,7 +55,7 @@ export function Sidebar() {
           setCollapsed(true)
         } else {
           setCollapsed(false)
-          setSidebarWidth(Math.min(Math.max(newWidth, 200), 400))
+          setSidebarWidth(Math.min(Math.max(newWidth, 180), 400))
         }
       }
     },
