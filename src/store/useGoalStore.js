@@ -26,11 +26,7 @@ export const useGoalStore = create(
           ].slice(0, 20),
         })),
 
-      user: {
-        name: 'Jordan Avery',
-        email: 'jordan@example.com',
-        timezone: 'pst',
-      },
+      user: null,
 
       preferences: {
         notifications: {
@@ -326,6 +322,10 @@ export const useGoalStore = create(
 
       updateUser: (patch) =>
         set((s) => ({ user: { ...s.user, ...patch } })),
+
+      login: (userData) => set({ user: userData }),
+      
+      logout: () => set({ user: null }),
 
       updatePreferences: (category, patch) =>
         set((s) => ({

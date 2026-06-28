@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { User, Bell, Palette, Shield, Check, LogOut } from 'lucide-react'
+import { User, Bell, Palette, Shield, Check, LogOut, LogIn } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { TopBar } from '../components/layout/TopBar'
 import { Card } from '../components/ui/Card'
@@ -21,7 +22,9 @@ export default function Settings() {
   const [active, setActive] = useState('profile')
   const [isEditing, setIsEditing] = useState(false)
   const [saved, setSaved] = useState(false)
+  const navigate = useNavigate()
   const user = useGoalStore((s) => s.user)
+  const logout = useGoalStore((s) => s.logout)
   const preferences = useGoalStore((s) => s.preferences) || {}
   const updateUser = useGoalStore((s) => s.updateUser)
   const updatePreferences = useGoalStore((s) => s.updatePreferences)
@@ -79,13 +82,26 @@ export default function Settings() {
               ))}
             </nav>
             <div className="hidden lg:block h-px w-full bg-border" />
-            <button
-              onClick={() => toast.success('Signed out (Simulated)')}
-              className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-ember-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ember-500 hover:bg-ember-50 hover:text-ember-700 dark:text-ember-500 dark:hover:bg-ember-500/10 dark:hover:text-ember-400"
-            >
-              <LogOut size={16} />
-              Sign out
-            </button>
+            {user ? (
+              <button
+                onClick={() => {
+                  logout()
+                  toast.success('Signed out')
+                }}
+                className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-ember-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ember-500 hover:bg-ember-50 hover:text-ember-700 dark:text-ember-500 dark:hover:bg-ember-500/10 dark:hover:text-ember-400"
+              >
+                <LogOut size={16} />
+                Sign out
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/auth')}
+                className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-brand-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand-500 hover:bg-brand-50 hover:text-brand-700 dark:text-brand-500 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
+              >
+                <LogIn size={16} />
+                Sign in
+              </button>
+            )}
           </div>
 
           <motion.div key={active} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>

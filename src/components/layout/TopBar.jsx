@@ -1,8 +1,9 @@
-import { Bell, Menu, Sun, Moon } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Bell, Menu, Sun, Moon, User, LogIn, LogOut, Settings as SettingsIcon } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
 import { useGoalStore } from '../../store/useGoalStore'
 import { Popover } from '../ui/Popover'
+import { DropdownMenu, DropdownItem, DropdownSeparator } from '../ui/DropdownMenu'
 import { cn } from '../../lib/utils'
 import { useEffect } from 'react'
 
@@ -16,14 +17,16 @@ export function TopBar({ title, subtitle, action }) {
   }, [])
 
   const user = useGoalStore((s) => s.user)
+  const logout = useGoalStore((s) => s.logout)
   const setMobileSidebarOpen = useGoalStore((s) => s.setMobileSidebarOpen)
   const theme = useGoalStore((s) => s.preferences?.appearance?.theme || 'light')
   const updatePreferences = useGoalStore((s) => s.updatePreferences)
   const activity = useGoalStore((s) => s.activity)
+  const navigate = useNavigate()
   
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
-    : 'U'
+    : null
 
   return (
     <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-border bg-surface/70 backdrop-blur-xl px-4 md:px-8 sticky top-0 z-10 transition-colors">
@@ -90,13 +93,43 @@ export function TopBar({ title, subtitle, action }) {
               </div>
             </div>
           </Popover>
-          <Link 
-            to="/settings"
-            className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface border border-border shadow-sm transition-all hover:bg-ink-900/5 hover:border-ink-300 dark:hover:border-ink-700 active:scale-95"
-            aria-label="Profile settings"
-          >
-            <span className="font-display text-sm font-bold text-ink-900 tracking-tight">{initials}</span>
-          </Link>
+          {user ? (
+            <DropdownMenu 
+              align="right"
+              trigger={
+                <button
+                  className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface border border-border shadow-sm transition-all hover:bg-ink-900/5 hover:border-ink-300 dark:hover:border-ink-700 active:scale-95"
+                  aria-label="Profile settings"
+                >
+                  <span className="font-display text-sm font-bold text-ink-900 tracking-tight">{initials}</span>
+                </button>
+              }
+            >
+              <DropdownItem icon={SettingsIcon} onClick={() => navigate('/settings')}>
+                Settings
+              </DropdownItem>
+              
+              <DropdownItem 
+                icon={theme === 'dark' ? Sun : Moon} 
+                onClick={() => updatePreferences('appearance', { theme: theme === 'dark' ? 'light' : 'dark' })}
+              >
+                {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+              </DropdownItem>
+              
+              <DropdownSeparator />
+              <DropdownItem icon={LogOut} onClick={() => logout()}>
+                Sign out
+              </DropdownItem>
+            </DropdownMenu>
+          ) : (
+            <button
+              onClick={() => navigate('/auth')}
+              className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface border border-border shadow-sm transition-all hover:bg-ink-900/5 hover:border-ink-300 dark:hover:border-ink-700 active:scale-95"
+              aria-label="Sign In"
+            >
+              <User size={16} className="text-ink-500" />
+            </button>
+          )}
         </div>
       </div>
     </header>
