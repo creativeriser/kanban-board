@@ -10,9 +10,9 @@ const VARIANTS = {
 }
 
 const SIZES = {
-  sm: 'h-8 px-3 text-[13px] gap-1.5',
+  sm: 'h-8 px-3 text-sm gap-1.5',
   md: 'h-9 px-4 text-sm gap-2',
-  lg: 'h-11 px-5 text-[15px] gap-2',
+  lg: 'h-11 px-5 text-base gap-2',
   icon: 'h-9 w-9 justify-center',
 }
 
@@ -24,7 +24,7 @@ export const Button = forwardRef(function Button(
     <button
       ref={ref}
       className={cn(
-        'inline-flex items-center rounded font-medium transition-all duration-150 active:scale-[0.97] disabled:opacity-40 disabled:pointer-events-none',
+        'inline-flex items-center rounded font-medium transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-canvas',
         VARIANTS[variant],
         SIZES[size],
         className

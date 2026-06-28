@@ -6,7 +6,7 @@ export const Input = forwardRef(function Input({ className, label, id, ...props 
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-[13px] font-medium text-ink-600">
+        <label htmlFor={id} className="text-sm font-medium text-ink-700">
           {label}
         </label>
       )}
@@ -15,7 +15,7 @@ export const Input = forwardRef(function Input({ className, label, id, ...props 
         id={id}
         className={cn(
           'h-10 rounded border border-border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400',
-          'transition-all focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10',
+          'transition-all outline-none focus-visible:border-brand-500 focus-visible:ring-1 focus-visible:ring-brand-500',
           className
         )}
         {...props}
@@ -28,7 +28,7 @@ export const Textarea = forwardRef(function Textarea({ className, label, id, ...
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-[13px] font-medium text-ink-600">
+        <label htmlFor={id} className="text-sm font-medium text-ink-700">
           {label}
         </label>
       )}
@@ -37,7 +37,7 @@ export const Textarea = forwardRef(function Textarea({ className, label, id, ...
         id={id}
         className={cn(
           'rounded border border-border bg-surface px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400',
-          'transition-all focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10 resize-none',
+          'transition-all outline-none focus-visible:border-brand-500 focus-visible:ring-1 focus-visible:ring-brand-500 resize-none',
           className
         )}
         {...props}
@@ -50,7 +50,7 @@ export const Select = forwardRef(function Select({ className, label, id, childre
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-[13px] font-medium text-ink-600">
+        <label htmlFor={id} className="text-sm font-medium text-ink-700">
           {label}
         </label>
       )}
@@ -60,7 +60,7 @@ export const Select = forwardRef(function Select({ className, label, id, childre
           id={id}
           className={cn(
             'h-10 w-full appearance-none rounded border border-border bg-surface px-3 pr-9 text-sm text-ink-900',
-            'transition-all focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10',
+            'transition-all outline-none focus-visible:border-brand-500 focus-visible:ring-1 focus-visible:ring-brand-500',
             className
           )}
           {...props}
