@@ -31,7 +31,7 @@ export function Dialog({ open, onClose, title, children, className }) {
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className={cn(
-              'relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-lg bg-white shadow-floating',
+              'relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-lg bg-surface shadow-floating dark:shadow-dark-floating',
               className
             )}
           >
