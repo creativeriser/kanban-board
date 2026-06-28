@@ -94,21 +94,13 @@ export function TopBar({ title, subtitle, action }) {
             </div>
           </Popover>
           {user ? (
-            <DropdownMenu 
-              align="right"
-              trigger={
-                <button
-                  className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface border border-border shadow-sm transition-all hover:bg-ink-900/5 hover:border-ink-300 dark:hover:border-ink-700 active:scale-95"
-                  aria-label="Profile settings"
-                >
-                  <span className="font-display text-sm font-bold text-ink-900 tracking-tight">{initials}</span>
-                </button>
-              }
+            <button
+              onClick={() => navigate('/settings')}
+              className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface border border-border shadow-sm transition-all hover:bg-ink-900/5 hover:border-ink-300 dark:hover:border-ink-700 active:scale-95"
+              aria-label="Profile settings"
             >
-              <DropdownItem icon={LogOut} onClick={() => logout()}>
-                Sign out
-              </DropdownItem>
-            </DropdownMenu>
+              <span className="font-display text-sm font-bold text-ink-900 tracking-tight">{initials}</span>
+            </button>
           ) : (
             <button
               onClick={() => navigate('/auth')}
