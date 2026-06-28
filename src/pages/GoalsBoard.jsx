@@ -134,7 +134,7 @@ export default function GoalsBoard() {
     <div>
       <TopBar title="Goals Board" subtitle="Drag goals across stages as they mature." />
 
-      <div className="px-8 py-6">
+      <div className="px-8 py-8">
         <CommandBar onNewGoal={() => setNewGoalModalOpen(true)} />
 
         <DndContext
@@ -144,7 +144,7 @@ export default function GoalsBoard() {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="mt-6 flex gap-5 overflow-x-auto pb-6 scrollbar-thin">
+          <div className="mt-8 flex gap-6 overflow-x-auto pb-6 scrollbar-thin">
             {STATUSES.map((s) => {
               const ids = visibleOrder[s.id] || []
               const avg = ids.length

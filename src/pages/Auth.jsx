@@ -147,12 +147,12 @@ export default function Auth() {
           </div>
 
           <div className="flex gap-3">
-            <Button variant="secondary" className="w-full justify-center border-border/50 hover:bg-ink-900/5 dark:hover:bg-white/5 transition-all duration-300 ease-out shadow-sm" type="button" onClick={handleSubmit} disabled={isLoading}>
-              <GoogleIcon className="h-4 w-4 mr-2" />
+            <Button variant="secondary" className="w-full justify-center gap-2 border-border/50 hover:bg-ink-900/5 dark:hover:bg-white/5 transition-all duration-300 ease-out shadow-sm" type="button" onClick={handleSubmit} disabled={isLoading}>
+              <GoogleIcon className="h-4 w-4" />
               Google
             </Button>
-            <Button variant="secondary" className="w-full justify-center border-border/50 hover:bg-ink-900/5 dark:hover:bg-white/5 transition-all duration-300 ease-out shadow-sm" type="button" onClick={handleSubmit} disabled={isLoading}>
-              <Github className="h-4 w-4 mr-2" />
+            <Button variant="secondary" className="w-full justify-center gap-2 border-border/50 hover:bg-ink-900/5 dark:hover:bg-white/5 transition-all duration-300 ease-out shadow-sm" type="button" onClick={handleSubmit} disabled={isLoading}>
+              <Github className="h-4 w-4" />
               GitHub
             </Button>
           </div>

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Kanban, BarChart3, Trophy, Settings, Sprout, ChevronsLeft, Search, Trash2, LifeBuoy } from 'lucide-react'
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { motion } from 'framer-motion'
+
 import { cn } from '../../lib/utils'
 import { useGoalStore } from '../../store/useGoalStore'
 import { calculateStreaks } from '../../lib/calculations'
@@ -31,7 +31,7 @@ export function Sidebar() {
   // Drag to Resize Logic
   const isResizing = useRef(false)
 
-  const startResizing = useCallback((e) => {
+  const startResizing = useCallback(() => {
     isResizing.current = true
     setIsResizingState(true)
     document.body.style.cursor = 'col-resize'
@@ -135,19 +135,15 @@ export function Sidebar() {
               <>
                 {/* Active Highlight Background */}
                 {isActive && (
-                  <motion.div
-                    layoutId="sidebar-active-bg"
+                  <div
                     className="absolute inset-0 rounded-lg bg-ink-900/5 dark:bg-ink-900/10 border border-ink-900/10 dark:border-ink-900/5"
-                    transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
                   />
                 )}
                 
                 {/* Active Left Pill */}
                 {isActive && (
-                  <motion.div
-                    layoutId="sidebar-active-pill"
+                  <div
                     className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-brand-500"
-                    transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
                   />
                 )}
                 

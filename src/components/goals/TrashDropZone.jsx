@@ -24,7 +24,7 @@ export function TrashDropZone({ isDragging }) {
             className={cn(
               "flex items-center gap-3 px-7 py-3.5 rounded-full transition-all duration-300 pointer-events-auto backdrop-blur-xl border",
               isOver 
-                ? "bg-red-500/10 border-red-500/40 text-red-600 dark:text-red-400 scale-[1.08] shadow-[0_10px_40px_rgba(239,68,68,0.25)]" 
+                ? "bg-ember-500/10 border-ember-500/40 text-ember-600 dark:text-ember-400 scale-[1.08] shadow-[0_10px_40px_rgba(255,107,74,0.25)]" 
                 : "bg-canvas/90 border-ink-200/60 dark:border-white/10 text-ink-500 shadow-floating"
             )}
           >

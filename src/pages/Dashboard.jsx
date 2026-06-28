@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip as RTooltip } from 'recharts'
 import { Flame, Target, CheckCircle2, TrendingUp, ArrowUpRight, ListChecks, CalendarClock, Plus, Rocket } from 'lucide-react'
@@ -106,19 +106,19 @@ export default function Dashboard() {
         }
       />
 
-      <div className="px-8 py-7">
+      <div className="px-8 py-8">
         {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr]"
+          className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]"
         >
-          <Card className="relative overflow-hidden p-7">
+          <Card className="relative overflow-hidden p-6">
             <div className="relative z-10 flex items-start justify-between gap-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">This month</p>
-                <h2 className="mt-1.5 font-display text-3xl font-semibold leading-tight text-ink-900">
+                <p className="text-[12px] font-semibold uppercase tracking-wider text-brand-600">This month</p>
+                <h2 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-ink-900">
                   You're {monthlyProgress}% toward your monthly goals
                 </h2>
                 <p className="mt-2 max-w-md text-sm text-ink-600">
@@ -137,7 +137,7 @@ export default function Dashboard() {
 
           <Card className="flex flex-col p-6">
             <div className="mb-1 flex items-center justify-between">
-              <p className="font-display text-base font-semibold text-ink-900">Weekly Momentum</p>
+              <p className="font-display text-[15px] font-semibold tracking-tight text-ink-900">Weekly Momentum</p>
               <span className={cn(
                 "inline-flex items-center gap-1 text-xs font-medium",
                 momentumChange > 0 ? "text-moss-600 dark:text-moss-500" :
@@ -171,7 +171,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Widget grid */}
-        <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Widget title="Upcoming Deadlines" icon={CalendarClock} delay={0.05}>
             {upcoming.length === 0 && <EmptyRow text="Nothing due in the next 3 weeks." />}
             <div className="flex flex-col gap-1">
@@ -270,11 +270,11 @@ function Stat({ icon: Icon, label, value, accent = 'ink' }) {
 
 function Widget({ title, icon: Icon, children, delay = 0 }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay }}>
-      <Card className="h-full p-5">
-        <div className="mb-3 flex items-center gap-2">
-          <Icon size={15} className="text-ink-400" />
-          <p className="font-display text-sm font-semibold text-ink-900">{title}</p>
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay }} className="h-full">
+      <Card className="h-full p-6 flex flex-col">
+        <div className="mb-4 flex items-center gap-2">
+          <Icon size={16} className="text-ink-400" />
+          <p className="font-display text-[14px] font-semibold tracking-tight text-ink-900">{title}</p>
         </div>
         {children}
       </Card>

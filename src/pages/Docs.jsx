@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   BookOpen, LayoutDashboard, Target, Zap, Shield, 
-  ChevronDown, Search, ArrowRight, ListChecks, Trophy, Trash2
+  ChevronDown, Search, ArrowRight, Trash2
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { GrowthRing } from '../components/ui/GrowthRing'
-import { PriorityDot } from '../components/goals/PriorityDot'
+
 
 const SECTIONS = [
   { id: 'getting-started', label: 'Getting Started', icon: BookOpen },
@@ -110,7 +110,7 @@ export default function Docs() {
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-brand-600 dark:text-brand-400">
                 <BookOpen size={14} /> Help Center
               </div>
-              <h1 className="mb-4 font-display text-4xl font-bold leading-tight text-ink-900 md:text-5xl">
+              <h1 className="mb-4 font-display text-4xl font-bold leading-tight tracking-tight text-ink-900 md:text-5xl">
                 Mastering GoalFlow
               </h1>
               <p className="text-base leading-relaxed text-ink-600 md:text-lg">
@@ -122,28 +122,28 @@ export default function Docs() {
           {/* Section: Getting Started */}
           <section id="getting-started" className="mb-20 scroll-mt-24">
             <FadeIn>
-              <h2 className="mb-6 font-display text-2xl font-bold text-ink-900 border-b border-border pb-2">1. The Philosophy</h2>
+              <h2 className="mb-6 font-display text-2xl font-bold tracking-tight text-ink-900 border-b border-border/60 pb-2">1. The Philosophy</h2>
               <p className="mb-6 text-base leading-relaxed text-ink-600">
                 Traditional task managers treat all tasks equally—buying milk is visually identical to starting a business. GoalFlow categorizes goals into a strict maturation pipeline:
               </p>
               
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-xl border border-border bg-surface p-5 shadow-sm transition-all hover:shadow-card">
+                <div className="rounded-xl border border-border/60 bg-surface/80 backdrop-blur-md p-6 shadow-sm transition-all hover:shadow-card">
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-ink-100 text-ink-700">1</div>
                   <h3 className="mb-2 font-display text-base font-semibold text-ink-900">Planning</h3>
                   <p className="text-sm text-ink-500">The incubation phase. Gather resources, define milestones, and prepare to execute.</p>
                 </div>
-                <div className="rounded-xl border border-indigo-500/20 bg-indigo-50/50 p-5 shadow-sm transition-all hover:shadow-card dark:bg-indigo-500/5">
+                <div className="rounded-xl border border-indigo-500/20 bg-indigo-50/50 p-6 shadow-sm transition-all hover:shadow-card dark:bg-indigo-500/5">
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-700">2</div>
                   <h3 className="mb-2 font-display text-base font-semibold text-ink-900">In Progress</h3>
                   <p className="text-sm text-ink-500">Active execution. This is where the work happens and momentum is built.</p>
                 </div>
-                <div className="rounded-xl border border-amber-500/20 bg-amber-50/50 p-5 shadow-sm transition-all hover:shadow-card dark:bg-amber-500/5">
+                <div className="rounded-xl border border-amber-500/20 bg-amber-50/50 p-6 shadow-sm transition-all hover:shadow-card dark:bg-amber-500/5">
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-700">3</div>
                   <h3 className="mb-2 font-display text-base font-semibold text-ink-900">Review</h3>
                   <p className="text-sm text-ink-500">Reflection phase. Have all milestones been met? Is the quality up to standard?</p>
                 </div>
-                <div className="rounded-xl border border-moss-500/20 bg-moss-50/50 p-5 shadow-sm transition-all hover:shadow-card dark:bg-moss-500/5">
+                <div className="rounded-xl border border-moss-500/20 bg-moss-50/50 p-6 shadow-sm transition-all hover:shadow-card dark:bg-moss-500/5">
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-moss-100 text-moss-700">4</div>
                   <h3 className="mb-2 font-display text-base font-semibold text-ink-900">Achieved</h3>
                   <p className="text-sm text-ink-500">Victory. The goal is completed and added to your permanent achievements.</p>
@@ -155,9 +155,9 @@ export default function Docs() {
           {/* Section: The Board */}
           <section id="the-board" className="mb-20 scroll-mt-24">
             <FadeIn>
-              <h2 className="mb-6 font-display text-2xl font-bold text-ink-900 border-b border-border pb-2">2. The Kanban Board</h2>
+              <h2 className="mb-6 font-display text-2xl font-bold tracking-tight text-ink-900 border-b border-border/60 pb-2">2. The Kanban Board</h2>
               
-              <div className="mb-8 overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
+              <div className="mb-8 overflow-hidden rounded-2xl border border-border/60 bg-surface/80 backdrop-blur-md shadow-card">
                 <div className="flex items-center gap-2 border-b border-border bg-ink-900/5 px-4 py-3">
                   <div className="flex gap-1.5">
                     <span className="h-3 w-3 rounded-full bg-red-400"></span>
@@ -192,13 +192,13 @@ export default function Docs() {
           {/* Section: Goals & Milestones */}
           <section id="goals-milestones" className="mb-20 scroll-mt-24">
             <FadeIn>
-              <h2 className="mb-6 font-display text-2xl font-bold text-ink-900 border-b border-border pb-2">3. Milestones & Progress</h2>
+              <h2 className="mb-6 font-display text-2xl font-bold tracking-tight text-ink-900 border-b border-border/60 pb-2">3. Milestones & Progress</h2>
               <p className="mb-6 text-base leading-relaxed text-ink-600">
                 Clicking on a goal card opens the Goal Details page. This is where you break large ambitions into actionable daily steps.
               </p>
 
               <div className="grid gap-6 md:grid-cols-2">
-                <div className="rounded-xl border border-border bg-surface p-8 shadow-sm text-center">
+                <div className="rounded-xl border border-border/60 bg-surface/80 backdrop-blur-md p-8 shadow-sm text-center">
                   <div className="mb-6 flex justify-center">
                     <GrowthRing progress={75} size={80} strokeWidth={6} tone="brand" />
                   </div>
@@ -208,7 +208,7 @@ export default function Docs() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-border bg-surface p-8 shadow-sm text-center">
+                <div className="rounded-xl border border-border/60 bg-surface/80 backdrop-blur-md p-8 shadow-sm text-center">
                   <div className="mb-6 flex flex-col gap-2">
                     <div className="flex items-center gap-3 rounded-lg border border-border bg-ink-50/50 p-3 dark:bg-white/5">
                       <div className="h-4 w-4 rounded-full border-2 border-brand-500 bg-brand-500 shrink-0"></div>
@@ -231,12 +231,12 @@ export default function Docs() {
           {/* Section: Shortcuts */}
           <section id="shortcuts" className="mb-20 scroll-mt-24">
             <FadeIn>
-              <h2 className="mb-6 font-display text-2xl font-bold text-ink-900 border-b border-border pb-2">4. Power Shortcuts</h2>
+              <h2 className="mb-6 font-display text-2xl font-bold tracking-tight text-ink-900 border-b border-border/60 pb-2">4. Power Shortcuts</h2>
               <p className="mb-6 text-base leading-relaxed text-ink-600">
                 GoalFlow is designed for speed. Keep your hands on the keyboard and move faster.
               </p>
 
-              <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
+              <div className="overflow-hidden rounded-xl border border-border/60 bg-surface/80 backdrop-blur-md shadow-sm">
                 <div className="flex items-center justify-between border-b border-border p-5">
                   <div className="flex items-center gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-ink-100 text-ink-700">
@@ -288,7 +288,7 @@ export default function Docs() {
           {/* Section: FAQ */}
           <section id="faq" className="scroll-mt-24">
             <FadeIn>
-              <h2 className="mb-6 font-display text-2xl font-bold text-ink-900 border-b border-border pb-2">5. Frequently Asked Questions</h2>
+              <h2 className="mb-6 font-display text-2xl font-bold tracking-tight text-ink-900 border-b border-border/60 pb-2">5. Frequently Asked Questions</h2>
               
               <div className="flex flex-col gap-2">
                 <FAQItem 

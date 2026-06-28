@@ -23,7 +23,6 @@ export const STATUSES = [
   { id: 'achieved', label: 'Achieved' },
 ]
 
-export const PRIORITIES = ['high', 'medium', 'low']
 
 let goalSeq = 1
 let milestoneSeq = 1
@@ -223,27 +222,4 @@ export const activityFeed = [
   { id: 'a7', goalId: 'g10', type: 'achieved', text: 'Achieved "Pay off remaining student loan"', time: d(-45) },
 ]
 
-// Weekly momentum — milestones completed per week, last 8 weeks
-export const weeklyMomentum = [
-  { week: 'W1', completed: 2 },
-  { week: 'W2', completed: 3 },
-  { week: 'W3', completed: 1 },
-  { week: 'W4', completed: 4 },
-  { week: 'W5', completed: 3 },
-  { week: 'W6', completed: 5 },
-  { week: 'W7', completed: 2 },
-  { week: 'W8', completed: 4 },
-]
 
-// Monthly achievements over the last 6 months
-export const monthlyAchievements = [
-  { month: 'Jan', achieved: 1 },
-  { month: 'Feb', achieved: 0 },
-  { month: 'Mar', achieved: 2 },
-  { month: 'Apr', achieved: 1 },
-  { month: 'May', achieved: 3 },
-  { month: 'Jun', achieved: 2 },
-]
-
-export const currentStreak = 12
-export const longestStreak = 27

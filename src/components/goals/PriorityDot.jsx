@@ -34,7 +34,7 @@ export function CategoryTag({ category, className }) {
   
   if (!cfg) return null
   return (
-    <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium', CAT_TONE[cfg.color] || 'bg-ink-100 text-ink-700', className)}>
+    <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium', CAT_TONE[cfg.color] || 'bg-ink-900/5 text-ink-700 dark:bg-white/5 dark:text-ink-300', className)}>
       {cfg.label}
     </span>
   )

@@ -8,7 +8,7 @@ import {
   CATEGORIES,
   STATUSES,
 } from '../lib/mockData'
-import { uid, triggerConfetti } from '../lib/utils'
+import { uid } from '../lib/utils'
 
 export const useGoalStore = create(
   persist(

@@ -24,14 +24,13 @@ export default function Trash() {
         action={
           trashIds.length > 0 && (
             <Button 
-              variant="outline" 
+              variant="danger" 
               onClick={() => {
                 if (window.confirm('Permanently delete all goals in the trash? This cannot be undone.')) {
                   emptyTrash()
                   toast.success('Trash emptied')
                 }
               }}
-              className="text-ember-600 border-ember-200 hover:bg-ember-50 dark:border-ember-900/30 dark:hover:bg-ember-500/10 dark:text-ember-500"
             >
               <Trash2 size={16} />
               Empty Bin
@@ -73,7 +72,7 @@ export default function Trash() {
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Button 
-                        variant="outline" 
+                        variant="secondary" 
                         size="sm"
                         onClick={() => {
                           restoreGoal(goal.id)
@@ -84,9 +83,8 @@ export default function Trash() {
                         Restore
                       </Button>
                       <Button 
-                        variant="outline" 
+                        variant="danger" 
                         size="sm"
-                        className="text-ember-600 hover:bg-ember-50 hover:border-ember-200 dark:text-ember-500 dark:hover:bg-ember-500/10 dark:hover:border-ember-500/30"
                         onClick={() => {
                           permanentlyDeleteGoal(goal.id)
                           toast.success('Permanently deleted')

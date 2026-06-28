@@ -67,13 +67,13 @@ export default function Achievements() {
         }
       />
 
-      <div className="px-8 py-6">
+      <div className="px-8 py-8">
         {goalList.length === 0 ? (
           <div className="flex h-[60vh] flex-col items-center justify-center text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-50 text-brand-500 dark:bg-brand-500/10">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-100 text-brand-600 dark:bg-brand-500/10 dark:text-brand-500">
               <Trophy size={32} />
             </div>
-            <h2 className="mb-2 font-display text-xl font-semibold text-ink-900">Your trophy case is empty</h2>
+            <h2 className="mb-2 font-display text-xl font-semibold tracking-tight text-ink-900">Your trophy case is empty</h2>
             <p className="max-w-sm text-sm text-ink-600">
               Create and complete goals to start building your streak, earning badges, and collecting trophies here.
             </p>
@@ -82,11 +82,11 @@ export default function Achievements() {
           <>
             {/* Streak hero */}
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-              <Card className="overflow-hidden bg-surface border border-border p-7 shadow-sm">
+              <Card className="overflow-hidden p-6">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-moss-300">Growth streak</p>
-                    <p className="mt-1.5 font-display text-4xl font-semibold leading-none text-ink-900">{currentStreak} days</p>
+                    <p className="text-[12px] font-semibold uppercase tracking-wider text-moss-300">Growth streak</p>
+                    <p className="mt-2 font-display text-4xl font-semibold leading-none tracking-tight text-ink-900">{currentStreak} days</p>
                     <p className="mt-2 text-sm text-ink-400">Longest streak: {longestStreak} days. Keep showing up daily.</p>
                   </div>
                   <div className="flex gap-1.5">
@@ -105,9 +105,9 @@ export default function Achievements() {
             </motion.div>
 
             {/* Badges */}
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.05 }} className="mt-5">
-              <p className="mb-3 font-display text-base font-semibold text-ink-900">Badges</p>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.05 }} className="mt-6">
+              <p className="mb-3 font-display text-[15px] font-semibold tracking-tight text-ink-900">Badges</p>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
                 {BADGES.map((b, i) => (
                   <motion.div
                     key={b.id}
@@ -128,22 +128,22 @@ export default function Achievements() {
             </motion.div>
 
             {/* Trophy case */}
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} className="mt-7">
-              <p className="mb-3 font-display text-base font-semibold text-ink-900">Completed Goals</p>
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} className="mt-8">
+              <p className="mb-4 font-display text-[15px] font-semibold tracking-tight text-ink-900">Completed Goals</p>
               {achieved.length === 0 ? (
                 <Card className="p-10 text-center text-sm text-ink-400">No goals achieved yet — your first trophy is waiting.</Card>
               ) : (
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {achieved.map((g, i) => (
                     <motion.div key={g.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.05 }}>
-                      <Card className="p-5">
+                      <Card className="p-6">
                         <div className="mb-2 flex items-center justify-between">
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-brand-700">
                             <Trophy size={15} />
                           </div>
                           <CategoryTag category={g.category} />
                         </div>
-                        <p className="font-display text-sm font-semibold leading-snug text-ink-900">{g.title}</p>
+                        <p className="font-display text-[15px] font-semibold leading-snug tracking-tight text-ink-900">{g.title}</p>
                         <p className="mt-1 font-mono text-[11px] text-ink-400">Achieved {format(new Date(g.dueDate), 'MMM d, yyyy')}</p>
                       </Card>
                     </motion.div>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+
 import { Check, Pencil, Trash2, GripVertical } from 'lucide-react'
-import { format, formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { cn } from '../../lib/utils'

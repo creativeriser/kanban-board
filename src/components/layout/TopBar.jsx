@@ -1,9 +1,9 @@
-import { Bell, Menu, Sun, Moon, User, LogIn, LogOut, Settings as SettingsIcon } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Bell, Menu, Sun, Moon, User } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
 import { useGoalStore } from '../../store/useGoalStore'
 import { Popover } from '../ui/Popover'
-import { DropdownMenu, DropdownItem, DropdownSeparator } from '../ui/DropdownMenu'
+
 import { cn } from '../../lib/utils'
 import { useEffect } from 'react'
 
@@ -17,7 +17,7 @@ export function TopBar({ title, subtitle, action }) {
   }, [])
 
   const user = useGoalStore((s) => s.user)
-  const logout = useGoalStore((s) => s.logout)
+
   const setMobileSidebarOpen = useGoalStore((s) => s.setMobileSidebarOpen)
   const theme = useGoalStore((s) => s.preferences?.appearance?.theme || 'light')
   const updatePreferences = useGoalStore((s) => s.updatePreferences)
@@ -29,7 +29,7 @@ export function TopBar({ title, subtitle, action }) {
     : null
 
   return (
-    <header className="flex min-h-[72px] py-3 shrink-0 items-center justify-between border-b border-border bg-surface/95 backdrop-blur-md px-4 md:px-8 sticky top-0 z-30 transition-colors">
+    <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-border bg-surface/95 backdrop-blur-md px-4 md:px-8 sticky top-0 z-30 transition-colors">
       <div className="flex items-center gap-3">
         <button 
           onClick={() => setMobileSidebarOpen(true)}

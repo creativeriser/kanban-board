@@ -13,7 +13,7 @@ import { MilestoneRow } from '../components/goals/MilestoneRow'
 import { EditGoalDialog } from '../components/goals/EditGoalDialog'
 import { useGoalStore, STATUSES } from '../store/useGoalStore'
 import { goalProgress, milestoneCounts, formatDueDate } from '../lib/calculations'
-import { format, formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 import {
   DndContext,
   PointerSensor,
@@ -115,7 +115,7 @@ export default function GoalDetails() {
   }
 
   return (
-    <div className="px-8 py-6">
+    <div className="px-8 py-8">
       <button
         onClick={() => navigate(-1)}
         className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-ink-900"
@@ -125,7 +125,7 @@ export default function GoalDetails() {
 
       {/* Hero */}
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-        <Card className="p-7">
+        <Card className="p-6">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0 flex-1">
               <div className="mb-2 flex items-center gap-2">
@@ -161,7 +161,7 @@ export default function GoalDetails() {
                   type="text"
                   value={goal.title}
                   onChange={(e) => updateGoal(goal.id, { title: e.target.value })}
-                  className="w-full bg-transparent font-display text-3xl font-semibold leading-tight text-ink-900 focus:outline-none focus:ring-0"
+                  className="w-full bg-transparent font-display text-3xl font-semibold leading-tight tracking-tight text-ink-900 focus:outline-none focus:ring-0"
                 />
                 <div className="flex shrink-0 items-center gap-1">
                   <button
@@ -209,11 +209,11 @@ export default function GoalDetails() {
         </Card>
       </motion.div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1.6fr_1fr]">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr_1fr]">
         {/* Milestones */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 }}>
           <Card className="p-6">
-            <p className="mb-4 font-display text-base font-semibold text-ink-900">Milestones</p>
+            <p className="mb-4 font-display text-base font-semibold tracking-tight text-ink-900">Milestones</p>
             <div className="flex flex-col gap-2.5">
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={milestoneList.map(m => m.id)} strategy={verticalListSortingStrategy}>
@@ -248,8 +248,8 @@ export default function GoalDetails() {
           </Card>
 
           {/* Progress timeline */}
-          <Card className="mt-5 p-6">
-            <p className="mb-4 font-display text-base font-semibold text-ink-900">Progress Timeline</p>
+          <Card className="mt-6 p-6">
+            <p className="mb-4 font-display text-base font-semibold tracking-tight text-ink-900">Progress Timeline</p>
             {completedMilestones.length === 0 ? (
               <p className="text-sm text-ink-400">Completed milestones will appear here as a timeline.</p>
             ) : (
@@ -271,12 +271,12 @@ export default function GoalDetails() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          className="flex flex-col gap-5"
+          className="flex flex-col gap-6"
         >
           <Card className="p-6">
             <div className="mb-3 flex items-center gap-2">
               <Pencil size={14} className="text-ink-400" />
-              <p className="font-display text-base font-semibold text-ink-900">Notes</p>
+              <p className="font-display text-base font-semibold tracking-tight text-ink-900">Notes</p>
             </div>
             <RichTextEditor
               content={notesDraft}
@@ -289,7 +289,7 @@ export default function GoalDetails() {
           </Card>
 
           <Card className="p-6">
-            <p className="mb-3 font-display text-base font-semibold text-ink-900">Statistics</p>
+            <p className="mb-3 font-display text-base font-semibold tracking-tight text-ink-900">Statistics</p>
             <div className="flex flex-col gap-3 text-sm">
               <Row label="Completion" value={`${progress}%`} />
               <Row label="Milestones done" value={`${done} / ${total}`} />
@@ -302,7 +302,7 @@ export default function GoalDetails() {
           <Card className="p-6">
             <div className="mb-3 flex items-center gap-2">
               <Activity size={14} className="text-ink-400" />
-              <p className="font-display text-base font-semibold text-ink-900">Activity Feed</p>
+              <p className="font-display text-base font-semibold tracking-tight text-ink-900">Activity Feed</p>
             </div>
             {activity.length === 0 ? (
               <p className="text-sm text-ink-400">No activity recorded yet for this goal.</p>

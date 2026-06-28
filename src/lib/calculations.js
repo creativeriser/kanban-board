@@ -48,13 +48,6 @@ export function sortGoalIds(ids, goalsById, sortBy) {
   return arr
 }
 
-export function categoryDistribution(goalsById) {
-  const counts = {}
-  Object.values(goalsById).forEach((g) => {
-    counts[g.category] = (counts[g.category] || 0) + 1
-  })
-  return counts
-}
 
 export function completionRateByMonth(goalsById, milestonesById) {
   // simple deterministic mock-friendly aggregate used by Analytics charts

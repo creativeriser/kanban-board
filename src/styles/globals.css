@@ -139,18 +139,18 @@
 }
 
 @layer utilities {
-  .scrollbar-thin::-webkit-scrollbar {
+  *::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  .scrollbar-thin::-webkit-scrollbar-thumb {
+  *::-webkit-scrollbar-thumb {
     background: theme('colors.ink.200');
     border-radius: 999px;
   }
-  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  .dark *::-webkit-scrollbar-thumb {
     background: theme('colors.ink.400');
   }
-  .scrollbar-thin::-webkit-scrollbar-track {
+  *::-webkit-scrollbar-track {
     background: transparent;
   }
 

@@ -3,7 +3,7 @@ import { Command } from 'cmdk'
 import { useNavigate } from 'react-router-dom'
 import { useGoalStore } from '../../store/useGoalStore'
 import { LayoutDashboard, Kanban, LineChart, Trophy, Settings, Plus, ArrowRight, Moon, Sun, Laptop } from 'lucide-react'
-import { cn } from '../../lib/utils'
+
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false)

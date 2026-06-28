@@ -90,27 +90,27 @@ export default function Analytics() {
     <div>
       <TopBar title="Analytics" subtitle="Performance insights across every goal you're growing." />
 
-      <div className="px-8 py-6">
+      <div className="px-8 py-8">
         {goalList.length === 0 ? (
           <div className="flex h-[60vh] flex-col items-center justify-center text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-50 text-brand-500 dark:bg-brand-500/10">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-100 text-brand-600 dark:bg-brand-500/10 dark:text-brand-500">
               <LineChartIcon size={32} />
             </div>
-            <h2 className="mb-2 font-display text-xl font-semibold text-ink-900">No data to analyze yet</h2>
+            <h2 className="mb-2 font-display text-xl font-semibold tracking-tight text-ink-900">No data to analyze yet</h2>
             <p className="max-w-sm text-sm text-ink-600">
               Analytics requires active goals. Start creating goals and completing milestones to unlock powerful performance insights here.
             </p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 lg:gap-6 lg:grid-cols-4">
               <KpiCard icon={Target} label="Avg. completion" value={`${avgProgress}%`} accent="moss" />
               <KpiCard icon={Award} label="Goals achieved" value={achievedCount} accent="indigo" />
               <KpiCard icon={Flame} label="Current streak" value={`${currentStreak}d`} accent="ember" />
               <KpiCard icon={TrendingUp} label="Longest streak" value={`${longestStreak}d`} accent="amber" />
             </div>
 
-            <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
               <ChartCard title="Goal Completion Rate" subtitle="Average progress by category" delay={0}>
                 <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={completionByCategory} margin={{ left: -16 }}>
@@ -179,9 +179,9 @@ export default function Analytics() {
               </ChartCard>
             </div>
 
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-5">
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-6">
               <Card className="p-6">
-                <p className="mb-1 font-display text-base font-semibold text-ink-900">Performance Insights</p>
+                <p className="mb-1 font-display text-base font-semibold tracking-tight text-ink-900">Performance Insights</p>
                 <ul className="mt-3 flex flex-col gap-2 text-sm text-ink-600">
                   <li>• {completionByCategory.length > 0 ? `${completionByCategory.sort((a,b)=>b.rate-a.rate)[0]?.category} is your strongest category.` : 'Start adding goals to see insights.'}</li>
                   <li>• {weeklyMomentum[7]?.completed > weeklyMomentum[6]?.completed ? 'Your weekly momentum is trending upward — milestone completions are up.' : 'Weekly momentum is steady or dipping. Try to complete a small milestone today.'}</li>
@@ -208,7 +208,7 @@ function KpiCard({ icon: Icon, label, value, accent }) {
       <div className={`mb-3 flex h-9 w-9 items-center justify-center rounded-full ${tones[accent]}`}>
         <Icon size={16} />
       </div>
-      <p className="font-mono text-2xl font-semibold text-ink-900">{value}</p>
+      <p className="font-mono text-2xl font-semibold tracking-tight text-ink-900">{value}</p>
       <p className="mt-0.5 text-xs text-ink-600">{label}</p>
     </Card>
   )
@@ -217,8 +217,8 @@ function KpiCard({ icon: Icon, label, value, accent }) {
 function ChartCard({ title, subtitle, children, delay = 0 }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay }}>
-      <Card className="p-6">
-        <p className="font-display text-base font-semibold text-ink-900">{title}</p>
+      <Card className="p-6 h-full flex flex-col">
+        <p className="font-display text-base font-semibold tracking-tight text-ink-900">{title}</p>
         <p className="mb-3 text-xs text-ink-600">{subtitle}</p>
         {children}
       </Card>

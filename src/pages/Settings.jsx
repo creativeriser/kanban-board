@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { User, Bell, Palette, Shield, Check, LogOut, LogIn } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+
 import { toast } from 'sonner'
 import { TopBar } from '../components/layout/TopBar'
 import { Card } from '../components/ui/Card'
@@ -22,7 +22,7 @@ export default function Settings() {
   const [active, setActive] = useState('profile')
   const [isEditing, setIsEditing] = useState(false)
   const [saved, setSaved] = useState(false)
-  const navigate = useNavigate()
+
   const user = useGoalStore((s) => s.user)
   const logout = useGoalStore((s) => s.logout)
   const preferences = useGoalStore((s) => s.preferences) || {}
@@ -97,7 +97,7 @@ export default function Settings() {
           </div>
 
           <motion.div key={active} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
-            <Card className="overflow-hidden p-0 shadow-sm border border-border">
+            <Card className="overflow-hidden p-0 shadow-sm border border-border/60 bg-surface/80 backdrop-blur-md">
               <div className="flex items-start justify-between border-b border-border bg-canvas/40 px-8 py-6">
                 <div>
                   <h2 className="font-display text-lg font-semibold tracking-tight text-ink-900">
@@ -157,18 +157,11 @@ export default function Settings() {
               )}
               
               {active === 'profile' && !user && (
-                <div className="flex flex-col items-center justify-center py-24 px-8 text-center h-full">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 mb-6 shadow-sm border border-brand-100 dark:border-brand-500/20">
-                    <User size={28} />
-                  </div>
-                  <h3 className="font-display text-xl font-semibold text-ink-900 mb-2 tracking-tight">Set up your profile</h3>
-                  <p className="text-ink-600 max-w-sm mb-8 leading-relaxed text-sm">
-                    You're currently using GoalFlow in local mode. Sign in to set up your profile and securely sync your goals across all your devices.
-                  </p>
-                  <Button variant="brand" onClick={() => navigate('/auth')}>
-                    <LogIn size={16} className="mr-2" /> Sign in or create account
-                  </Button>
-                </div>
+                <LoginRequiredEmptyState 
+                  title="Set up your profile"
+                  description="You're currently using GoalFlow in local mode. Sign in to personalize your profile and securely sync your goals to the cloud."
+                  icon={User}
+                />
               )}
 
               {active === 'notifications' && (
@@ -215,7 +208,7 @@ export default function Settings() {
                     </SettingsRow>
                     <SettingsRow label="Accent color" description="The primary color used for highlights and active states." isEditing={true}>
                       <div className="flex gap-3">
-                        {['#1B6F5C', '#4C5FD5', '#FF6B4A', '#E8A23D'].map((color, i) => (
+                        {['#1B6F5C', '#4C5FD5', '#FF6B4A', '#E8A23D'].map((color) => (
                           <button
                             key={color}
                             type="button"
@@ -355,6 +348,30 @@ function SaveBar({ saved, className }) {
       <Button type="submit" variant="brand" size="sm">
         Save changes
       </Button>
+    </div>
+  )
+}
+
+function LoginRequiredEmptyState({ title, description, icon: Icon }) {
+  const navigate = useNavigate()
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-6 h-full relative overflow-hidden min-h-[400px]">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 dark:opacity-100">
+        <div className="w-80 h-80 bg-brand-500/10 rounded-full blur-[100px]" />
+      </div>
+      
+      <div className="relative z-10 flex flex-col items-center text-center max-w-[400px] bg-surface/80 backdrop-blur-md p-10 rounded-2xl border border-border/60 shadow-sm ring-1 ring-black/5 dark:ring-white/5">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 text-brand-700 dark:bg-brand-500/20 dark:text-brand-400 mb-6 shadow-inner ring-1 ring-brand-200/50 dark:ring-brand-500/30">
+          <Icon size={24} />
+        </div>
+        <h3 className="font-display text-xl font-semibold text-ink-900 mb-2.5 tracking-tight">{title}</h3>
+        <p className="text-ink-600 mb-8 leading-relaxed text-[14.5px]">
+          {description}
+        </p>
+        <Button variant="brand" onClick={() => navigate('/auth')} className="shadow-sm dark:shadow-brand-500/20 px-6 py-2.5 gap-2">
+          <LogIn size={16} /> Sign in or create account
+        </Button>
+      </div>
     </div>
   )
 }
