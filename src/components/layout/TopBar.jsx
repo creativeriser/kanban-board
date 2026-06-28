@@ -35,8 +35,8 @@ export function TopBar({ title, subtitle, action }) {
           <Menu size={20} />
         </button>
         <div>
-          <h1 className="font-display text-[20px] md:text-[26px] font-semibold leading-tight text-ink-900">{title}</h1>
-          {subtitle && <p className="mt-0.5 hidden md:block text-[13.5px] text-ink-600">{subtitle}</p>}
+          <h1 className="font-display text-2xl md:text-3xl font-semibold leading-tight text-ink-900">{title}</h1>
+          {subtitle && <p className="mt-0.5 hidden md:block text-sm text-ink-600">{subtitle}</p>}
         </div>
       </div>
       <div className="flex items-center gap-2 md:gap-5">
@@ -92,10 +92,10 @@ export function TopBar({ title, subtitle, action }) {
           </Popover>
           <Link 
             to="/settings"
-            className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface border border-ink-900 shadow-sm transition-all hover:bg-ink-900/5 hover:border-ink-700 active:scale-95"
+            className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface border border-border shadow-sm transition-all hover:bg-ink-900/5 hover:border-ink-300 dark:hover:border-ink-700 active:scale-95"
             aria-label="Profile settings"
           >
-            <span className="font-display text-[13px] font-bold text-ink-900 tracking-tight">{initials}</span>
+            <span className="font-display text-sm font-bold text-ink-900 tracking-tight">{initials}</span>
           </Link>
         </div>
       </div>

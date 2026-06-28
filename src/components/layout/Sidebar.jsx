@@ -93,7 +93,7 @@ export function Sidebar() {
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 text-canvas">
           <Sprout size={17} />
         </div>
-        {!collapsed && <span className="font-display text-[17px] font-semibold tracking-wide text-ink-900 whitespace-nowrap">GoalFlow</span>}
+        {!collapsed && <span className="font-display text-lg font-semibold tracking-wide text-ink-900 whitespace-nowrap">GoalFlow</span>}
       </div>
 
       <div className="px-3 pt-5 overflow-hidden">
@@ -126,7 +126,7 @@ export function Sidebar() {
             onClick={() => setMobileSidebarOpen(false)}
             className={({ isActive }) =>
               cn(
-                'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-medium transition-colors outline-none whitespace-nowrap',
+                'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors outline-none whitespace-nowrap',
                 isActive ? 'text-ink-900' : 'text-ink-600 hover:text-ink-900 hover:bg-ink-900/5'
               )
             }
