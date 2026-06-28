@@ -148,8 +148,8 @@ export default function Dashboard() {
                 <AreaChart data={weeklyMomentum} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="momentumFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="rgb(var(--color-brand-600))" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="rgb(var(--color-brand-600))" stopOpacity={0} />
+                      <stop offset="0%" stopColor={chartColor} stopOpacity={0.35} />
+                      <stop offset="100%" stopColor={chartColor} stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="week" tick={{ fontSize: 10, fill: '#9498A3' }} axisLine={false} tickLine={false} />
@@ -157,7 +157,7 @@ export default function Dashboard() {
                     contentStyle={{ fontSize: 12, borderRadius: 8, backgroundColor: 'rgb(var(--color-surface))', borderColor: 'rgb(var(--color-border))', color: 'rgb(var(--color-ink-900))' }}
                     labelStyle={{ fontWeight: 600 }}
                   />
-                  <Area type="monotone" dataKey="completed" stroke="rgb(var(--color-brand-600))" strokeWidth={2} fill="url(#momentumFill)" />
+                  <Area type="monotone" dataKey="completed" stroke={chartColor} strokeWidth={2} fill="url(#momentumFill)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
