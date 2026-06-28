@@ -52,6 +52,12 @@ export default function Dashboard() {
     return Math.round(((current - prev) / prev) * 100)
   }, [weeklyMomentum])
 
+  const chartColor = momentumChange > 0 
+    ? "rgb(var(--color-moss-500))" 
+    : momentumChange < 0 
+      ? "rgb(var(--color-ember-500))" 
+      : "rgb(var(--color-ink-400))"
+
   if (goalList.length === 0) {
     return (
       <div className="flex h-full flex-col">
