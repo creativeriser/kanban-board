@@ -118,7 +118,7 @@ export default function GoalDetails() {
     <div className="px-8 py-6">
       <button
         onClick={() => navigate(-1)}
-        className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-600 transition-colors hover:text-ink-900"
+        className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-ink-900"
       >
         <ArrowLeft size={15} /> Back
       </button>
@@ -147,7 +147,7 @@ export default function GoalDetails() {
                     }
                     moveGoal(goal.id, newStatus)
                   }}
-                  className="ml-1 rounded-full border border-border bg-white px-2.5 py-0.5 text-[11px] font-medium text-ink-700 focus:border-brand-500 focus:outline-none"
+                  className="ml-1 rounded-full border border-border bg-surface px-2.5 py-0.5 text-xs font-medium text-ink-700 focus:border-brand-500 focus:outline-none"
                 >
                   {STATUSES.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -161,7 +161,7 @@ export default function GoalDetails() {
                   type="text"
                   value={goal.title}
                   onChange={(e) => updateGoal(goal.id, { title: e.target.value })}
-                  className="w-full bg-transparent font-display text-[28px] font-semibold leading-tight text-ink-900 focus:outline-none focus:ring-0"
+                  className="w-full bg-transparent font-display text-3xl font-semibold leading-tight text-ink-900 focus:outline-none focus:ring-0"
                 />
                 <div className="flex shrink-0 items-center gap-1">
                   <button
@@ -173,15 +173,15 @@ export default function GoalDetails() {
                   </button>
                   <button
                     onClick={handleDeleteGoal}
-                    className="flex h-8 w-8 items-center justify-center rounded-md text-ink-500 transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-ink-500 transition-colors hover:bg-ember-500/10 dark:hover:bg-ember-500/20 hover:text-ember-600 dark:hover:text-ember-400"
                     aria-label="Delete goal"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
               </div>
-              <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-ink-600">{goal.description}</p>
-              <div className="mt-5 flex flex-wrap items-center gap-5 text-[13px] text-ink-600">
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-600">{goal.description}</p>
+              <div className="mt-5 flex flex-wrap items-center gap-5 text-sm text-ink-600">
                 <span className="inline-flex items-center gap-1.5">
                   <CalendarDays size={14} /> Due {formatDueDate(goal.dueDate)}
                 </span>
@@ -213,7 +213,7 @@ export default function GoalDetails() {
         {/* Milestones */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 }}>
           <Card className="p-6">
-            <p className="mb-4 font-display text-[16px] font-semibold text-ink-900">Milestones</p>
+            <p className="mb-4 font-display text-base font-semibold text-ink-900">Milestones</p>
             <div className="flex flex-col gap-2.5">
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={milestoneList.map(m => m.id)} strategy={verticalListSortingStrategy}>
@@ -229,7 +229,7 @@ export default function GoalDetails() {
                 </SortableContext>
               </DndContext>
               {milestoneList.length === 0 && (
-                <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-[13px] text-ink-400">
+                <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-ink-400">
                   No milestones yet — break this goal down into steps.
                 </p>
               )}
@@ -249,15 +249,15 @@ export default function GoalDetails() {
 
           {/* Progress timeline */}
           <Card className="mt-5 p-6">
-            <p className="mb-4 font-display text-[16px] font-semibold text-ink-900">Progress Timeline</p>
+            <p className="mb-4 font-display text-base font-semibold text-ink-900">Progress Timeline</p>
             {completedMilestones.length === 0 ? (
-              <p className="text-[13px] text-ink-400">Completed milestones will appear here as a timeline.</p>
+              <p className="text-sm text-ink-400">Completed milestones will appear here as a timeline.</p>
             ) : (
               <ol className="relative ml-1.5 flex flex-col gap-5 border-l-2 border-brand-100 pl-5">
                 {completedMilestones.map((m) => (
                   <li key={m.id} className="relative">
-                    <span className="absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border-2 border-brand-600 bg-white" />
-                    <p className="text-[13px] font-medium text-ink-900">{m.title}</p>
+                    <span className="absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border-2 border-brand-600 bg-surface" />
+                    <p className="text-sm font-medium text-ink-900">{m.title}</p>
                     <p className="font-mono text-[11px] text-ink-400">{formatDistanceToNow(new Date(m.completedAt), { addSuffix: true })}</p>
                   </li>
                 ))}
@@ -276,7 +276,7 @@ export default function GoalDetails() {
           <Card className="p-6">
             <div className="mb-3 flex items-center gap-2">
               <Pencil size={14} className="text-ink-400" />
-              <p className="font-display text-[15px] font-semibold text-ink-900">Notes</p>
+              <p className="font-display text-base font-semibold text-ink-900">Notes</p>
             </div>
             <RichTextEditor
               content={notesDraft}
@@ -289,8 +289,8 @@ export default function GoalDetails() {
           </Card>
 
           <Card className="p-6">
-            <p className="mb-3 font-display text-[15px] font-semibold text-ink-900">Statistics</p>
-            <div className="flex flex-col gap-3 text-[13px]">
+            <p className="mb-3 font-display text-base font-semibold text-ink-900">Statistics</p>
+            <div className="flex flex-col gap-3 text-sm">
               <Row label="Completion" value={`${progress}%`} />
               <Row label="Milestones done" value={`${done} / ${total}`} />
               <Row label="Status" value={STATUSES.find((s) => s.id === goal.status)?.label} />
@@ -302,17 +302,17 @@ export default function GoalDetails() {
           <Card className="p-6">
             <div className="mb-3 flex items-center gap-2">
               <Activity size={14} className="text-ink-400" />
-              <p className="font-display text-[15px] font-semibold text-ink-900">Activity Feed</p>
+              <p className="font-display text-base font-semibold text-ink-900">Activity Feed</p>
             </div>
             {activity.length === 0 ? (
-              <p className="text-[13px] text-ink-400">No activity recorded yet for this goal.</p>
+              <p className="text-sm text-ink-400">No activity recorded yet for this goal.</p>
             ) : (
               <div className="flex flex-col gap-3">
                 {activity.map((a) => (
                   <div key={a.id} className="flex gap-2.5">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
                     <div>
-                      <p className="text-[12.5px] leading-snug text-ink-700">{a.text}</p>
+                      <p className="text-sm leading-snug text-ink-700">{a.text}</p>
                       <p className="font-mono text-[11px] text-ink-400">{formatDistanceToNow(new Date(a.time), { addSuffix: true })}</p>
                     </div>
                   </div>
