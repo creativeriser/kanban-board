@@ -69,7 +69,7 @@ export default function Settings() {
                   key={s.id}
                   onClick={() => handleNav(s.id)}
                   className={cn(
-                    'flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-[13.5px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+                    'flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
                     active === s.id ? 'bg-ink-900/5 text-ink-900 font-semibold' : 'text-ink-600 font-medium hover:bg-ink-900/5 hover:text-ink-900 dark:hover:bg-white/5'
                   )}
                 >
@@ -81,7 +81,7 @@ export default function Settings() {
             <div className="hidden lg:block h-px w-full bg-border" />
             <button
               onClick={() => toast.success('Signed out (Simulated)')}
-              className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-[13.5px] font-medium text-ember-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ember-500 hover:bg-ember-50 hover:text-ember-700 dark:text-ember-500 dark:hover:bg-ember-500/10 dark:hover:text-ember-400"
+              className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-ember-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ember-500 hover:bg-ember-50 hover:text-ember-700 dark:text-ember-500 dark:hover:bg-ember-500/10 dark:hover:text-ember-400"
             >
               <LogOut size={16} />
               Sign out
@@ -92,10 +92,10 @@ export default function Settings() {
             <Card className="overflow-hidden p-0 shadow-sm border border-border">
               <div className="flex items-start justify-between border-b border-border bg-canvas/40 px-8 py-6">
                 <div>
-                  <h2 className="font-display text-[18px] font-semibold tracking-tight text-ink-900">
+                  <h2 className="font-display text-lg font-semibold tracking-tight text-ink-900">
                     {SECTIONS.find(s => s.id === active)?.label}
                   </h2>
-                  <p className="mt-1 text-[13.5px] text-ink-600">
+                  <p className="mt-1 text-sm text-ink-600">
                     {active === 'profile' && 'Update your personal details and how we reach you.'}
                     {active === 'notifications' && 'Control exactly what alerts interrupt your focus.'}
                     {active === 'appearance' && 'Customize how GoalFlow looks on your screen.'}
@@ -141,7 +141,7 @@ export default function Settings() {
                     </motion.div>
                   )}
                   {saved && !isEditing && (
-                    <div className="bg-brand-100/50 border-t border-brand-100 px-8 py-3 flex items-center gap-2 text-brand-700 text-[13px] font-medium">
+                    <div className="bg-brand-100/50 dark:bg-brand-500/10 border-t border-brand-100 dark:border-brand-500/20 px-8 py-3 flex items-center gap-2 text-brand-700 dark:text-brand-400 text-sm font-medium">
                       <Check size={16} /> Profile saved successfully.
                     </div>
                   )}
@@ -240,8 +240,8 @@ export default function Settings() {
                   <div className="flex flex-col px-8 py-6">
                     <div className="border border-ember-400/30 bg-ember-100/30 dark:border-ember-500/20 dark:bg-ember-500/10 rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
-                        <p className="text-[14px] font-semibold text-ember-600 dark:text-ember-400">Developer Zone: Factory Reset</p>
-                        <p className="mt-1 text-[13px] text-ember-600/80 dark:text-ember-400/80 max-w-md">Wipe your local storage and reset all goals, streaks, and settings back to the initial dummy data. This cannot be undone.</p>
+                        <p className="text-sm font-semibold text-ember-600 dark:text-ember-400">Developer Zone: Factory Reset</p>
+                        <p className="mt-1 text-sm text-ember-600/80 dark:text-ember-400/80 max-w-md">Wipe your local storage and reset all goals, streaks, and settings back to the initial dummy data. This cannot be undone.</p>
                       </div>
                       <Button 
                         variant="outline" 
@@ -271,12 +271,12 @@ function SettingsRow({ label, description, value, isEditing = true, children, bo
   return (
     <div className={cn("flex flex-col gap-3 sm:flex-row sm:gap-10 py-6", border && "border-b border-border")}>
       <div className="w-full sm:w-[240px] shrink-0">
-        <p className="text-[13.5px] font-semibold text-ink-900">{label}</p>
-        {description && <p className="mt-1 text-[13px] text-ink-600 leading-relaxed">{description}</p>}
+        <p className="text-sm font-semibold text-ink-900">{label}</p>
+        {description && <p className="mt-1 text-sm text-ink-600 leading-relaxed">{description}</p>}
       </div>
       <div className="flex-1 max-w-md flex items-center min-h-[40px]">
         {!isEditing ? (
-          <span className="text-[14.5px] text-ink-900">{value}</span>
+          <span className="text-sm text-ink-900">{value}</span>
         ) : (
           children
         )}
@@ -290,10 +290,10 @@ function Toggle({ label, description, checked, onChange, border = true, disabled
     <div className={cn("flex items-center justify-between py-6", border && "border-b border-border", disabled && "opacity-60 grayscale")}>
       <div className="pr-8 max-w-[400px]">
         <div className="flex items-center gap-3">
-          <p className="text-[13.5px] font-semibold text-ink-900">{label}</p>
-          {badge && <span className="rounded-full bg-ink-900/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-ink-600">{badge}</span>}
+          <p className="text-sm font-semibold text-ink-900">{label}</p>
+          {badge && <span className="rounded-full bg-ink-900/5 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-ink-600">{badge}</span>}
         </div>
-        <p className="mt-1 text-[13px] text-ink-600 leading-relaxed">{description}</p>
+        <p className="mt-1 text-sm text-ink-600 leading-relaxed">{description}</p>
       </div>
       <button
         type="button"
@@ -324,7 +324,7 @@ function SaveBar({ saved, className }) {
         <motion.span
           initial={{ opacity: 0, x: 4 }}
           animate={{ opacity: 1, x: 0 }}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-brand-600"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600"
         >
           <Check size={15} /> Saved successfully
         </motion.span>
