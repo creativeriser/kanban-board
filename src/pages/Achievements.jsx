@@ -85,9 +85,9 @@ export default function Achievements() {
               <Card className="overflow-hidden bg-surface border border-border p-7 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div>
-                    <p className="text-[12px] font-semibold uppercase tracking-wide text-moss-300">Growth streak</p>
-                    <p className="mt-1.5 font-display text-[34px] font-semibold leading-none text-ink-900">{currentStreak} days</p>
-                    <p className="mt-2 text-[13px] text-ink-400">Longest streak: {longestStreak} days. Keep showing up daily.</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-moss-300">Growth streak</p>
+                    <p className="mt-1.5 font-display text-4xl font-semibold leading-none text-ink-900">{currentStreak} days</p>
+                    <p className="mt-2 text-sm text-ink-400">Longest streak: {longestStreak} days. Keep showing up daily.</p>
                   </div>
                   <div className="flex gap-1.5">
                     {Array.from({ length: 14 }).map((_, i) => (
@@ -106,7 +106,7 @@ export default function Achievements() {
 
             {/* Badges */}
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.05 }} className="mt-5">
-              <p className="mb-3 font-display text-[16px] font-semibold text-ink-900">Badges</p>
+              <p className="mb-3 font-display text-base font-semibold text-ink-900">Badges</p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                 {BADGES.map((b, i) => (
                   <motion.div
@@ -119,7 +119,7 @@ export default function Achievements() {
                       <div className={cn('flex h-11 w-11 items-center justify-center rounded-full', TONE_BG[b.tone])}>
                         <b.icon size={20} className={TONE_TEXT[b.tone]} />
                       </div>
-                      <p className="text-[12px] font-medium leading-tight text-ink-900">{b.label}</p>
+                      <p className="text-xs font-medium leading-tight text-ink-900">{b.label}</p>
                       {!b.earned && <p className="text-[10px] text-ink-400">Locked</p>}
                     </Card>
                   </motion.div>
@@ -129,9 +129,9 @@ export default function Achievements() {
 
             {/* Trophy case */}
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} className="mt-7">
-              <p className="mb-3 font-display text-[16px] font-semibold text-ink-900">Completed Goals</p>
+              <p className="mb-3 font-display text-base font-semibold text-ink-900">Completed Goals</p>
               {achieved.length === 0 ? (
-                <Card className="p-10 text-center text-[13px] text-ink-400">No goals achieved yet — your first trophy is waiting.</Card>
+                <Card className="p-10 text-center text-sm text-ink-400">No goals achieved yet — your first trophy is waiting.</Card>
               ) : (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {achieved.map((g, i) => (
@@ -143,7 +143,7 @@ export default function Achievements() {
                           </div>
                           <CategoryTag category={g.category} />
                         </div>
-                        <p className="font-display text-[14.5px] font-semibold leading-snug text-ink-900">{g.title}</p>
+                        <p className="font-display text-sm font-semibold leading-snug text-ink-900">{g.title}</p>
                         <p className="mt-1 font-mono text-[11px] text-ink-400">Achieved {format(new Date(g.dueDate), 'MMM d, yyyy')}</p>
                       </Card>
                     </motion.div>
