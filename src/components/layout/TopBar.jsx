@@ -29,7 +29,7 @@ export function TopBar({ title, subtitle, action }) {
     : null
 
   return (
-    <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-border bg-surface/70 backdrop-blur-xl px-4 md:px-8 sticky top-0 z-10 transition-colors">
+    <header className="flex min-h-[72px] py-3 shrink-0 items-center justify-between border-b border-border bg-surface/95 backdrop-blur-md px-4 md:px-8 sticky top-0 z-30 transition-colors">
       <div className="flex items-center gap-3">
         <button 
           onClick={() => setMobileSidebarOpen(true)}
