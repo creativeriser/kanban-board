@@ -119,14 +119,14 @@ export default function Settings() {
                     {active === 'advanced' && 'Danger zone. Reset or export your data.'}
                   </p>
                 </div>
-                {active === 'profile' && !isEditing && (
+                {active === 'profile' && !isEditing && user && (
                   <Button type="button" variant="outline" size="sm" onClick={() => setIsEditing(true)}>
                     Edit Profile
                   </Button>
                 )}
               </div>
               
-              {active === 'profile' && (
+              {active === 'profile' && user && (
                 <form onSubmit={handleSave} className="flex flex-col h-full">
                   <div className="flex flex-col px-8 py-2">
                     <SettingsRow label="Full name" description="Your name as it appears across the platform." value={user?.name} isEditing={isEditing}>
@@ -162,6 +162,21 @@ export default function Settings() {
                     </div>
                   )}
                 </form>
+              )}
+              
+              {active === 'profile' && !user && (
+                <div className="flex flex-col items-center justify-center py-24 px-8 text-center h-full">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 mb-6 shadow-sm border border-brand-100 dark:border-brand-500/20">
+                    <User size={28} />
+                  </div>
+                  <h3 className="font-display text-xl font-semibold text-ink-900 mb-2 tracking-tight">Set up your profile</h3>
+                  <p className="text-ink-600 max-w-sm mb-8 leading-relaxed text-sm">
+                    You're currently using GoalFlow in local mode. Sign in to set up your profile and securely sync your goals across all your devices.
+                  </p>
+                  <Button variant="brand" onClick={() => navigate('/auth')}>
+                    <LogIn size={16} className="mr-2" /> Sign in or create account
+                  </Button>
+                </div>
               )}
 
               {active === 'notifications' && (
